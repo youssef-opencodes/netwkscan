@@ -1,0 +1,78 @@
+"""Device comparison logic: detects new, returned and disconnected devices
+between a fresh scan result and what's already stored in the database.
+"""
+from datetime import datetime
+
+from core.database import (
+    get_all_devices,
+    get_device_by_ip,
+    add_device,
+    update_device_status,
+)
+
+
+def analyze_scan(scan_results: list[dict]) -> dict:
+    """Compare a scan's results against the database and update device states.
+
+    Args:
+        scan_results: list of dicts, each with at least an "ip" key, and
+            optionally hostname, mac, vendor, os.
+
+    Returns:
+        dict with keys "new", "returned", "disconnected" -> lists of IPs,
+        and "seen_ips" -> set of IPs present in this scan.
+    """
+    seen_ips = {entry["ip"] for entry in scan_results}
+    known_devices = get_all_devices()
+    known_ips = {device.ip for device in known_devices}
+
+    new_ips: list[str] = []
+    returned_ips: list[str] = []
+    disconnected_ips: list[str] = []
+
+    # Devices found in this scan: either brand new, or returning/still online.
+    for entry in scan_results:
+        ip = entry["ip"]
+        existing = get_device_by_ip(ip)
+
+        if existing is None:
+            add_device(
+                {
+                    "ip": ip,
+                    "hostname": entry.get("hostname"),
+                    "mac": entry.get("mac"),
+                    "vendor": entry.get("vendor"),
+                    "os": entry.get("os"),
+                    "status": "new",
+                    "appearance_count": 1,
+                }
+            )
+            new_ips.append(ip)
+        else:
+            was_offline = existing.status == "offline"
+            update_device_status(
+                ip,
+                status="online",
+                hostname=entry.get("hostname") or existing.hostname,
+                mac=entry.get("mac") or existing.mac,
+                vendor=entry.get("vendor") or existing.vendor,
+                os=entry.get("os") or existing.os,
+                appearance_count=existing.appearance_count + 1,
+            )
+            if was_offline:
+                returned_ips.append(ip)
+
+    # Devices known before but absent from this scan -> mark offline.
+    for ip in known_ips - seen_ips:
+        device = get_device_by_ip(ip)
+        if device is not None and device.status != "offline":
+            update_device_status(ip, status="offline")
+            disconnected_ips.append(ip)
+
+    return {
+        "new": new_ips,
+        "returned": returned_ips,
+        "disconnected": disconnected_ips,
+        "seen_ips": seen_ips,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
