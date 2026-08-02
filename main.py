@@ -1,7 +1,12 @@
 """NMD - Network Monitoring Dashboard
 Application entry point: initializes the database and launches the GUI.
 """
+import os
 import sys
+
+# Integration fix (Dev 3): make `src/` importable so `core.*`, `gui.*`,
+# `models.*` and `utils.*` resolve when running `python main.py` from root.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from core.database import init_db
 from utils.logger import get_logger
