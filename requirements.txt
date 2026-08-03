@@ -1,0 +1,20 @@
+# NMD - Network Monitoring Dashboard
+# Python dependencies
+
+# Core Nmap integration
+python-nmap==0.7.1
+
+# GUI Framework
+customtkinter==5.2.2
+
+# Database ORM - Python 3.14 compatible
+sqlalchemy>=2.0.35
+
+# Charts (future use)
+matplotlib>=3.8.0
+
+# Packaging
+pyinstaller>=6.21.0
+
+# Additional utilities
+pillow>=10.3.0
