@@ -9,6 +9,86 @@ from typing import Any
 
 from utils.logger import log_event
 
+import socket
+import subprocess
+import re
+from pathlib import Path
+import json
+
+
+def detect_router_ip() -> str:
+    """Auto-detect the router/gateway IP and return as subnet."""
+    try:
+        # Method 1: Get default gateway via ip route
+        result = subprocess.run(['ip', 'route', 'show', 'default'], 
+                              capture_output=True, text=True)
+        # Look for: "default via 192.168.0.1 dev wlan0"
+        match = re.search(r'default via (\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            ip = match.group(1)
+            return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    try:
+        # Method 2: Get route to 8.8.8.8 (Google DNS)
+        result = subprocess.run(['ip', 'route', 'get', '8.8.8.8'], 
+                              capture_output=True, text=True)
+        # Look for: "8.8.8.8 via 192.168.0.1 dev wlan0"
+        match = re.search(r'via (\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            ip = match.group(1)
+            return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    try:
+        # Method 3: Use /proc/net/route (Linux)
+        with open('/proc/net/route', 'r') as f:
+            lines = f.readlines()
+            for line in lines[1:]:  # Skip header
+                parts = line.strip().split()
+                if parts[1] == '00000000':  # Default route
+                    # Convert hex to IP: 0101A8C0 -> 192.168.1.1
+                    hex_ip = parts[2]
+                    ip_parts = [str(int(hex_ip[i:i+2][::-1], 16)) for i in range(0, 8, 2)]
+                    ip = '.'.join(ip_parts)
+                    return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    try:
+        # Method 4: Use socket to get local IP and assume /24
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+        if ip and ip != '127.0.0.1':
+            return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    # Fallback: Check common subnets
+    common_subnets = [
+        '192.168.0.0/24',
+        '192.168.1.0/24',
+        '192.168.2.0/24',
+        '10.0.0.0/24',
+        '172.16.0.0/24'
+    ]
+    
+    # Try to find which subnet has active devices
+    for subnet in common_subnets:
+        try:
+            result = subprocess.run(['ping', '-c', '1', '-W', '1', subnet.replace('.0/24', '.1')], 
+                                  capture_output=True, timeout=2)
+            if result.returncode == 0:
+                return subnet
+        except:
+            pass
+    
+    return '192.168.0.0/24'
+
 # Resolve project root relative to this file: src/utils/config.py -> project_root
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "data" / "config.json"
