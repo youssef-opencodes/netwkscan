@@ -1,0 +1,32 @@
+{
+  "Ping": {
+    "args": "-sn",
+    "ports": "",
+    "description": "Ping sweep only, no port scan (fastest host discovery)"
+  },
+  "Quick": {
+    "args": "-T4 -F",
+    "ports": "1-1024",
+    "description": "Fast scan of the most common ports"
+  },
+  "Version": {
+    "args": "-sV -sC",
+    "ports": "1-1024",
+    "description": "Service/version detection with default scripts"
+  },
+  "OS": {
+    "args": "-O",
+    "ports": "1-1024",
+    "description": "OS fingerprinting"
+  },
+  "Full": {
+    "args": "-sV -O -A",
+    "ports": "1-65535",
+    "description": "Comprehensive scan: services, OS, scripts, all ports"
+  },
+  "Intense": {
+    "args": "-T4 -A -v",
+    "ports": "1-65535",
+    "description": "Aggressive, verbose, all-ports scan"
+  }
+}

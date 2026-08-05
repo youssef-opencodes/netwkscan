@@ -2,13 +2,14 @@
 import os
 from datetime import datetime
 
-from sqlalchemy import create_engine, desc
+from sqlalchemy import create_engine, desc, inspect, text
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 # --- Base must be defined before importing models (avoids circular import) ---
 Base = declarative_base()
 
-DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DB_DIR = os.path.join(PROJECT_ROOT, "data")
 DB_PATH = os.path.join(DB_DIR, "nmd.db")
 
 os.makedirs(DB_DIR, exist_ok=True)
@@ -21,8 +22,29 @@ from models.scan import Scan  # noqa: E402
 
 
 def init_db() -> None:
-    """Create all tables if they don't already exist."""
+    """Create all tables if they don't already exist, then apply migrations
+    for any older database that predates the ports/device_type/scan_command columns.
+    """
     Base.metadata.create_all(engine)
+    migrate_db()
+
+
+def migrate_db() -> None:
+    """Add new columns (ports, device_type, scan_command) to a pre-existing
+    database created before plan2. Safe to call on a fresh DB (no-op).
+    """
+    inspector = inspect(engine)
+    with engine.begin() as conn:
+        if inspector.has_table("devices"):
+            device_cols = {c["name"] for c in inspector.get_columns("devices")}
+            if "device_type" not in device_cols:
+                conn.execute(text("ALTER TABLE devices ADD COLUMN device_type VARCHAR(50)"))
+            if "ports" not in device_cols:
+                conn.execute(text("ALTER TABLE devices ADD COLUMN ports JSON"))
+        if inspector.has_table("scans"):
+            scan_cols = {c["name"] for c in inspector.get_columns("scans")}
+            if "scan_command" not in scan_cols:
+                conn.execute(text("ALTER TABLE scans ADD COLUMN scan_command VARCHAR(500)"))
 
 
 def get_session() -> Session:
@@ -55,11 +77,17 @@ def get_device_by_ip(ip: str) -> Device | None:
         return session.query(Device).filter(Device.ip == ip).first()
 
 
+def get_devices_by_type(device_type: str) -> list[Device]:
+    """Return all devices matching a given device_type (Router/PC/Phone/Server/Unknown)."""
+    with get_session() as session:
+        return session.query(Device).filter(Device.device_type == device_type).all()
+
+
 def update_device_status(ip: str, status: str, **extra_fields) -> Device | None:
     """Update a device's status (and optionally other fields) by IP.
 
-    extra_fields may include hostname, mac, vendor, os, custom_label, appearance_count.
-    last_seen is always refreshed to now.
+    extra_fields may include hostname, mac, vendor, os, device_type, ports,
+    custom_label, appearance_count. last_seen is always refreshed to now.
     """
     with get_session() as session:
         device = session.query(Device).filter(Device.ip == ip).first()
@@ -70,6 +98,30 @@ def update_device_status(ip: str, status: str, **extra_fields) -> Device | None:
         for key, value in extra_fields.items():
             if hasattr(device, key):
                 setattr(device, key, value)
+        session.commit()
+        session.refresh(device)
+        return device
+
+
+def update_device_ports(ip: str, ports: dict) -> Device | None:
+    """Store the open-ports dict ({"22": "ssh", ...}) discovered for a device."""
+    with get_session() as session:
+        device = session.query(Device).filter(Device.ip == ip).first()
+        if device is None:
+            return None
+        device.ports = ports
+        session.commit()
+        session.refresh(device)
+        return device
+
+
+def update_device_label(ip: str, label: str) -> Device | None:
+    """Set a user-defined custom label on a device."""
+    with get_session() as session:
+        device = session.query(Device).filter(Device.ip == ip).first()
+        if device is None:
+            return None
+        device.custom_label = label
         session.commit()
         session.refresh(device)
         return device
@@ -90,7 +142,9 @@ def delete_device(ip: str) -> bool:
 # Scan CRUD
 # --------------------------------------------------------------------------
 def add_scan(scan_data: dict) -> Scan:
-    """Insert a new scan record. Expects keys matching Scan columns."""
+    """Insert a new scan record. Expects keys matching Scan columns
+    (including the optional scan_command audit-trail field).
+    """
     with get_session() as session:
         scan = Scan(**scan_data)
         session.add(scan)
