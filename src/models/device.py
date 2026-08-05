@@ -1,7 +1,7 @@
 """Device model - represents a network device tracked by NMD."""
 from datetime import datetime
 
-from sqlalchemy import String, Integer, DateTime
+from sqlalchemy import String, Integer, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.database import Base
@@ -16,6 +16,9 @@ class Device(Base):
     mac: Mapped[str | None] = mapped_column(String(17), nullable=True)
     vendor: Mapped[str | None] = mapped_column(String(255), nullable=True)
     os: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # MODIFIED (plan2): device classification + discovered open ports
+    device_type: Mapped[str | None] = mapped_column(String(50), nullable=True, default="Unknown")
+    ports: Mapped[dict | None] = mapped_column(JSON, nullable=True, default=dict)  # {"22": "ssh", "80": "http"}
     first_seen: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     last_seen: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
@@ -25,7 +28,7 @@ class Device(Base):
     appearance_count: Mapped[int] = mapped_column(Integer, default=1)
 
     def __repr__(self) -> str:
-        return f"<Device(ip={self.ip!r}, status={self.status!r})>"
+        return f"<Device(ip={self.ip!r}, status={self.status!r}, type={self.device_type!r})>"
 
     def to_dict(self) -> dict:
         return {
@@ -35,6 +38,8 @@ class Device(Base):
             "mac": self.mac,
             "vendor": self.vendor,
             "os": self.os,
+            "device_type": self.device_type,
+            "ports": self.ports or {},
             "first_seen": self.first_seen.isoformat() if self.first_seen else None,
             "last_seen": self.last_seen.isoformat() if self.last_seen else None,
             "status": self.status,
