@@ -43,6 +43,8 @@ def analyze_scan(scan_results: list[dict]) -> dict:
                     "mac": entry.get("mac"),
                     "vendor": entry.get("vendor"),
                     "os": entry.get("os"),
+                    "device_type": entry.get("device_type") or "Unknown",
+                    "ports": entry.get("ports") or {},
                     "status": "new",
                     "appearance_count": 1,
                 }
@@ -57,6 +59,8 @@ def analyze_scan(scan_results: list[dict]) -> dict:
                 mac=entry.get("mac") or existing.mac,
                 vendor=entry.get("vendor") or existing.vendor,
                 os=entry.get("os") or existing.os,
+                device_type=entry.get("device_type") or existing.device_type or "Unknown",
+                ports=entry.get("ports") if entry.get("ports") is not None else existing.ports,
                 appearance_count=existing.appearance_count + 1,
             )
             if was_offline:
@@ -74,5 +78,7 @@ def analyze_scan(scan_results: list[dict]) -> dict:
         "returned": returned_ips,
         "disconnected": disconnected_ips,
         "seen_ips": seen_ips,
+        "scan_results": scan_results,
         "timestamp": datetime.utcnow().isoformat(),
     }
+

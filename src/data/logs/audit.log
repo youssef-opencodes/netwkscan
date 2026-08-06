@@ -1,0 +1,405 @@
+2026-08-03 21:41:46 | INFO     | nmd | Starting NMD application...
+2026-08-03 21:41:46 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 21:41:48 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 21:41:48 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 21:41:48 | WARNING  | nmd | Nmap binary not found: scanning controls are disabled.
+2026-08-03 21:41:48 | INFO     | nmd | Launching GUI main window.
+2026-08-03 21:42:05 | INFO     | nmd | Starting custom scan on target '192.168.0.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 21:42:05 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:42:05 | INFO     | nmd | Scan on '192.168.0.0/24' completed in 0.01s. Found 0 host(s).
+2026-08-03 21:42:05 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:42:32 | INFO     | nmd | Starting custom scan on target '192.168.0.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:42:32 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:42:32 | INFO     | nmd | Scan on '192.168.0.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:42:32 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:42:46 | INFO     | nmd | Starting custom scan on target '192.168.0.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:42:46 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:42:46 | INFO     | nmd | Scan on '192.168.0.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:42:46 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:43:34 | INFO     | nmd | Starting custom scan on target '192.168.0.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:43:34 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:43:34 | INFO     | nmd | Scan on '192.168.0.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:43:34 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:44:51 | INFO     | nmd | Starting custom scan on target '192.168.0.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:44:51 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:44:51 | INFO     | nmd | Scan on '192.168.0.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:44:51 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:47:58 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:47:58 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:47:58 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:47:58 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:48:01 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:48:01 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:48:01 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.01s. Found 0 host(s).
+2026-08-03 21:48:01 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:48:05 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:48:05 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:48:05 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:48:05 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:48:06 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:48:06 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:48:06 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:48:06 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:48:16 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:48:16 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:48:16 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:48:16 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:48:21 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:48:21 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:48:21 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:48:21 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:48:38 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:48:38 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\venv\\Scripts;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin'
+2026-08-03 21:48:38 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:48:38 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:50:53 | INFO     | nmd | Starting NMD application...
+2026-08-03 21:50:53 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 21:50:53 | ERROR    | nmd | GUI module not found (gui/main_window.py). Backend is ready; waiting on frontend integration.
+2026-08-03 21:50:59 | INFO     | nmd | GUI closed by user.
+2026-08-03 21:51:05 | INFO     | nmd | Starting NMD application...
+2026-08-03 21:51:05 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 21:51:05 | ERROR    | nmd | GUI module not found (gui/main_window.py). Backend is ready; waiting on frontend integration.
+2026-08-03 21:54:18 | INFO     | nmd | Starting NMD application...
+2026-08-03 21:54:18 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 21:54:19 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 21:54:19 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 21:54:20 | WARNING  | nmd | Nmap binary not found: scanning controls are disabled.
+2026-08-03 21:54:20 | INFO     | nmd | Launching GUI main window.
+2026-08-03 21:54:25 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 21:54:25 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 21:54:25 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.01s. Found 0 host(s).
+2026-08-03 21:54:25 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:54:34 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:54:34 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 21:54:34 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:54:34 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:54:37 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:54:37 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 21:54:37 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:54:37 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:54:44 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:54:44 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 21:54:44 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:54:44 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:54:44 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:54:44 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 21:54:44 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:54:44 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:54:45 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 21:54:45 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 21:54:45 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 21:54:45 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 21:54:46 | INFO     | nmd | GUI closed by user.
+2026-08-03 22:57:58 | INFO     | nmd | Starting NMD application...
+2026-08-03 22:57:58 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 22:57:59 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 22:57:59 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 22:57:59 | WARNING  | nmd | Nmap binary not found: scanning controls are disabled.
+2026-08-03 22:57:59 | INFO     | nmd | Launching GUI main window.
+2026-08-03 22:58:27 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 22:58:27 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 22:58:27 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.01s. Found 0 host(s).
+2026-08-03 22:58:27 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 22:59:07 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 22:59:07 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 22:59:07 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 22:59:07 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 22:59:19 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 22:59:19 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 22:59:19 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 22:59:19 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 22:59:22 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 22:59:22 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 22:59:22 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.0s. Found 0 host(s).
+2026-08-03 22:59:22 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 22:59:28 | INFO     | nmd | GUI closed by user.
+2026-08-03 23:05:16 | INFO     | nmd | Starting NMD application...
+2026-08-03 23:05:16 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 23:05:17 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 23:05:17 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 23:05:17 | WARNING  | nmd | Nmap binary not found: scanning controls are disabled.
+2026-08-03 23:05:17 | INFO     | nmd | Launching GUI main window.
+2026-08-03 23:05:38 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 23:05:38 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 23:05:38 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.01s. Found 0 host(s).
+2026-08-03 23:05:38 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 23:12:56 | INFO     | nmd | GUI closed by user.
+2026-08-03 23:13:07 | INFO     | nmd | Starting NMD application...
+2026-08-03 23:13:07 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 23:13:07 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 23:13:07 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 23:13:07 | WARNING  | nmd | Nmap binary not found: scanning controls are disabled.
+2026-08-03 23:13:07 | INFO     | nmd | Launching GUI main window.
+2026-08-03 23:13:18 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 23:13:18 | ERROR    | nmd | Nmap execution error during scan: 'nmap program was not found in path. PATH is : C:\\Users\\HP\\Desktop\\netwkscan\\.venv\\Scripts;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand;c:\\Users\\HP\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli;C:\\Users\\HP\\Downloads\\ORACLE19\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\PuTTY\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Program Files\\nodejs\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python314\\;C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Launcher\\;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\msys64\\ucrt64\\bin;C:\\MinGW\\bin;C:\\maven\\apache-maven-3.9.15\\bin;C:\\Users\\HP\\AppData\\Roaming\\npm;C:\\Users\\HP\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\HP\\AppData\\Local\\Programs\\Devin\\bin;c:\\Users\\HP\\.vscode\\extensions\\ms-python.debugpy-2026.6.0-win32-x64\\bundled\\scripts\\noConfigScripts'
+2026-08-03 23:13:18 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.01s. Found 0 host(s).
+2026-08-03 23:13:18 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 23:13:20 | INFO     | nmd | GUI closed by user.
+2026-08-03 23:16:16 | INFO     | nmd | Starting NMD application...
+2026-08-03 23:16:16 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 23:16:16 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 23:16:16 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 23:16:16 | INFO     | nmd | Launching GUI main window.
+2026-08-03 23:16:26 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn -sV -O', ports: '1-1024')
+2026-08-03 23:16:26 | ERROR    | nmd | Nmap execution error during scan: 'WARNING: OS Scan is unreliable without a port scan.  You need to use a scan type along with it, such as -sS, -sT, -sF, etc instead of -sn\r\nQUITTING!\r\n'
+2026-08-03 23:16:26 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.28s. Found 0 host(s).
+2026-08-03 23:16:26 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 23:16:29 | INFO     | nmd | GUI closed by user.
+2026-08-03 23:17:29 | INFO     | nmd | Starting NMD application...
+2026-08-03 23:17:29 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 23:17:29 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 23:17:29 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 23:17:29 | INFO     | nmd | Launching GUI main window.
+2026-08-03 23:17:34 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:17:34 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.1s. Found 0 host(s).
+2026-08-03 23:17:34 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-03 23:18:35 | INFO     | nmd | Starting NMD application...
+2026-08-03 23:18:35 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-03 23:18:35 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-03 23:18:35 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-03 23:18:35 | INFO     | nmd | Launching GUI main window.
+2026-08-03 23:18:39 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-03 23:18:39 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-03 23:18:39 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-03 23:18:39 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:39 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.11s. Found 0 host(s).
+2026-08-03 23:18:39 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-03 23:18:40 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-03 23:18:40 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-03 23:18:40 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-03 23:18:40 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:40 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.18s. Found 0 host(s).
+2026-08-03 23:18:40 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-03 23:18:40 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-03 23:18:40 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-03 23:18:40 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-03 23:18:40 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:40 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.08s. Found 0 host(s).
+2026-08-03 23:18:40 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-03 23:18:40 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-03 23:18:40 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-03 23:18:40 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-03 23:18:40 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:40 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.09s. Found 0 host(s).
+2026-08-03 23:18:40 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-03 23:18:41 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-03 23:18:41 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-03 23:18:41 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-03 23:18:41 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:41 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.09s. Found 0 host(s).
+2026-08-03 23:18:41 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-03 23:18:45 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-03 23:18:45 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-03 23:18:45 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-03 23:18:45 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:45 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.09s. Found 0 host(s).
+2026-08-03 23:18:45 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-03 23:18:50 | INFO     | nmd | Starting custom scan on target '10.222.83.0/24' (args: '-sn', ports: '1-1024')
+2026-08-03 23:18:50 | INFO     | nmd | Scan on '10.222.83.0/24' completed in 0.09s. Found 0 host(s).
+2026-08-03 23:18:50 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\Desktop\netwkscan\data\config.json.
+2026-08-06 11:52:19 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_load_save_config_tempfile0\test_config.json. Creating default configuration.
+2026-08-06 11:52:19 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 11:52:19 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 11:52:19 | ERROR    | nmd | Invalid JSON in config file C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_load_invalid_json_fallbac0\corrupt.json: Expecting property name enclosed in double quotes: line 1 column 3 (char 2). Falling back to default configuration.
+2026-08-06 11:52:19 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_update_config0\update_test.json. Creating default configuration.
+2026-08-06 11:52:19 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_update_config0\update_test.json.
+2026-08-06 11:52:19 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-3\test_update_config0\update_test.json.
+2026-08-06 11:52:44 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_load_save_config_tempfile0\test_config.json. Creating default configuration.
+2026-08-06 11:52:44 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 11:52:44 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 11:52:44 | ERROR    | nmd | Invalid JSON in config file C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_load_invalid_json_fallbac0\corrupt.json: Expecting property name enclosed in double quotes: line 1 column 3 (char 2). Falling back to default configuration.
+2026-08-06 11:52:44 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_update_config0\update_test.json. Creating default configuration.
+2026-08-06 11:52:44 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_update_config0\update_test.json.
+2026-08-06 11:52:44 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-4\test_update_config0\update_test.json.
+2026-08-06 11:53:19 | ERROR    | nmd | Error parsing scan result for host 192.168.1.10: 'dict' object has no attribute 'all_protocols'
+2026-08-06 11:53:19 | ERROR    | nmd | Error parsing scan result for host 192.168.1.20: 'dict' object has no attribute 'all_protocols'
+2026-08-06 11:53:19 | WARNING  | nmd | Custom scan target is empty.
+2026-08-06 11:53:19 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.0/24
+2026-08-06 11:53:19 | ERROR    | nmd | Error parsing scan result for host 192.168.1.50: 'dict' object has no attribute 'all_protocols'
+2026-08-06 11:53:19 | INFO     | nmd | Scan finished in 0.0s. Devices found: 0
+2026-08-06 11:53:19 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.1
+2026-08-06 11:53:19 | ERROR    | nmd | Nmap execution failed: 'Nmap error simulation'
+2026-08-06 11:53:19 | INFO     | nmd | Scan finished in 0.0s. Devices found: 0
+2026-08-06 11:53:34 | WARNING  | nmd | Custom scan target is empty.
+2026-08-06 11:53:34 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.0/24
+2026-08-06 11:53:34 | INFO     | nmd | Scan finished in 0.0s. Devices found: 1
+2026-08-06 11:53:34 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.1
+2026-08-06 11:53:34 | ERROR    | nmd | Nmap execution failed: 'Nmap error simulation'
+2026-08-06 11:53:34 | INFO     | nmd | Scan finished in 0.0s. Devices found: 0
+2026-08-06 12:09:34 | INFO     | nmd | New device detected: 192.168.1.100
+2026-08-06 12:09:34 | INFO     | nmd | Device returned online: 192.168.1.101
+2026-08-06 12:09:34 | WARNING  | nmd | Device disconnected: 192.168.1.102
+2026-08-06 12:09:34 | INFO     | nmd | New device detected: 10.0.0.1
+2026-08-06 12:09:34 | WARNING  | nmd | Device disconnected: 10.0.0.2
+2026-08-06 12:09:34 | INFO     | nmd | Alert memory cleared.
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler scan interval updated to 0.5s.
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler scan interval updated to 0.1s.
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler background worker thread started.
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler started with interval of 0.1s.
+2026-08-06 12:12:04 | WARNING  | nmd | Scheduler is already running.
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:04 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:04 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:04 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:04 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:05 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:05 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:05 | INFO     | nmd | Scheduler background worker thread exiting.
+2026-08-06 12:12:05 | INFO     | nmd | Scheduler stopped.
+2026-08-06 12:12:05 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:05 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler scan interval updated to 0.5s.
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler scan interval updated to 0.1s.
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler background worker thread started.
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler started with interval of 0.1s.
+2026-08-06 12:12:19 | WARNING  | nmd | Scheduler is already running.
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:19 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:19 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:19 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:19 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:20 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:20 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:20 | INFO     | nmd | Scheduler background worker thread exiting.
+2026-08-06 12:12:20 | INFO     | nmd | Scheduler stopped.
+2026-08-06 12:12:20 | INFO     | nmd | Scheduler starting 'custom' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:20 | ERROR    | nmd | Error during scheduler scan execution: not enough values to unpack (expected 2, got 0)
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler scan interval updated to 0.5s.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler scan interval updated to 0.1s.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler background worker thread started.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler started with interval of 0.1s.
+2026-08-06 12:12:38 | WARNING  | nmd | Scheduler is already running.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:38 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:38 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:38 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:38 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler background worker thread exiting.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler stopped.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:38 | INFO     | nmd | Scheduler scan completed successfully: 1 total devices, 1 new, 0 disconnected.
+2026-08-06 12:12:47 | INFO     | nmd | New device detected: 192.168.1.100
+2026-08-06 12:12:47 | INFO     | nmd | Device returned online: 192.168.1.101
+2026-08-06 12:12:47 | WARNING  | nmd | Device disconnected: 192.168.1.102
+2026-08-06 12:12:47 | INFO     | nmd | New device detected: 10.0.0.1
+2026-08-06 12:12:47 | WARNING  | nmd | Device disconnected: 10.0.0.2
+2026-08-06 12:12:47 | INFO     | nmd | Alert memory cleared.
+2026-08-06 12:12:47 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_load_save_config_tempfile0\test_config.json. Creating default configuration.
+2026-08-06 12:12:47 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 12:12:47 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 12:12:47 | ERROR    | nmd | Invalid JSON in config file C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_load_invalid_json_fallbac0\corrupt.json: Expecting property name enclosed in double quotes: line 1 column 3 (char 2). Falling back to default configuration.
+2026-08-06 12:12:47 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_update_config0\update_test.json. Creating default configuration.
+2026-08-06 12:12:47 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_update_config0\update_test.json.
+2026-08-06 12:12:47 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-5\test_update_config0\update_test.json.
+2026-08-06 12:12:47 | INFO     | nmd | New device detected: 192.168.1.100
+2026-08-06 12:12:47 | INFO     | nmd | New device detected: 192.168.1.101
+2026-08-06 12:12:47 | WARNING  | nmd | Device disconnected: 192.168.1.101
+2026-08-06 12:12:47 | WARNING  | nmd | Custom scan target is empty.
+2026-08-06 12:12:47 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.0/24
+2026-08-06 12:12:47 | INFO     | nmd | Scan finished in 0.0s. Devices found: 1
+2026-08-06 12:12:47 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.1
+2026-08-06 12:12:47 | ERROR    | nmd | Nmap execution failed: 'Nmap error simulation'
+2026-08-06 12:12:47 | INFO     | nmd | Scan finished in 0.01s. Devices found: 0
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler scan interval updated to 0.5s.
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler scan interval updated to 0.1s.
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler background worker thread started.
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler started with interval of 0.1s.
+2026-08-06 12:12:47 | WARNING  | nmd | Scheduler is already running.
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:47 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:47 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:47 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:47 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:48 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:48 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:12:48 | INFO     | nmd | Scheduler background worker thread exiting.
+2026-08-06 12:12:48 | INFO     | nmd | Scheduler stopped.
+2026-08-06 12:12:48 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:12:48 | INFO     | nmd | Scheduler scan completed successfully: 1 total devices, 1 new, 0 disconnected.
+2026-08-06 12:13:07 | INFO     | nmd | New device detected: 192.168.1.100
+2026-08-06 12:13:07 | INFO     | nmd | Device returned online: 192.168.1.101
+2026-08-06 12:13:07 | WARNING  | nmd | Device disconnected: 192.168.1.102
+2026-08-06 12:13:07 | INFO     | nmd | New device detected: 10.0.0.1
+2026-08-06 12:13:07 | WARNING  | nmd | Device disconnected: 10.0.0.2
+2026-08-06 12:13:07 | INFO     | nmd | Alert memory cleared.
+2026-08-06 12:13:07 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_load_save_config_tempfile0\test_config.json. Creating default configuration.
+2026-08-06 12:13:07 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 12:13:07 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_load_save_config_tempfile0\test_config.json.
+2026-08-06 12:13:07 | ERROR    | nmd | Invalid JSON in config file C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_load_invalid_json_fallbac0\corrupt.json: Expecting property name enclosed in double quotes: line 1 column 3 (char 2). Falling back to default configuration.
+2026-08-06 12:13:07 | INFO     | nmd | Config file not found at C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_update_config0\update_test.json. Creating default configuration.
+2026-08-06 12:13:07 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_update_config0\update_test.json.
+2026-08-06 12:13:07 | INFO     | nmd | Configuration successfully saved to C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-6\test_update_config0\update_test.json.
+2026-08-06 12:13:07 | INFO     | nmd | New device detected: 192.168.1.50
+2026-08-06 12:13:07 | WARNING  | nmd | New Open Port Detected on 192.168.1.50: 80 (http)
+2026-08-06 12:13:07 | INFO     | nmd | Port Closed on 192.168.1.50: 22 (ssh)
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler preset updated to 'Quick'.
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler starting preset 'Quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 0 disconnected.
+2026-08-06 12:13:07 | INFO     | nmd | New device detected: 192.168.1.100
+2026-08-06 12:13:07 | INFO     | nmd | New device detected: 192.168.1.101
+2026-08-06 12:13:07 | WARNING  | nmd | Device disconnected: 192.168.1.101
+2026-08-06 12:13:07 | WARNING  | nmd | Custom scan target is empty.
+2026-08-06 12:13:07 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.0/24
+2026-08-06 12:13:07 | INFO     | nmd | Scan finished in 0.0s. Devices found: 1
+2026-08-06 12:13:07 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.1.1
+2026-08-06 12:13:07 | ERROR    | nmd | Nmap execution failed: 'Nmap error simulation'
+2026-08-06 12:13:07 | INFO     | nmd | Scan finished in 0.0s. Devices found: 0
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler scan interval updated to 0.5s.
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler scan interval updated to 0.1s.
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler background worker thread started.
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler started with interval of 0.1s.
+2026-08-06 12:13:07 | WARNING  | nmd | Scheduler is already running.
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:13:07 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:13:07 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:13:07 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:13:08 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:13:08 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:13:08 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:13:08 | ERROR    | nmd | Error during scheduler scan execution: (sqlite3.OperationalError) no such table: devices
+[SQL: SELECT devices.id AS devices_id, devices.hostname AS devices_hostname, devices.ip AS devices_ip, devices.mac AS devices_mac, devices.vendor AS devices_vendor, devices.os AS devices_os, devices.device_type AS devices_device_type, devices.ports AS devices_ports, devices.first_seen AS devices_first_seen, devices.last_seen AS devices_last_seen, devices.status AS devices_status, devices.custom_label AS devices_custom_label, devices.appearance_count AS devices_appearance_count 
+FROM devices ORDER BY devices.last_seen DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-08-06 12:13:08 | INFO     | nmd | Scheduler background worker thread exiting.
+2026-08-06 12:13:08 | INFO     | nmd | Scheduler stopped.
+2026-08-06 12:13:08 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-06 12:13:08 | INFO     | nmd | Scheduler scan completed successfully: 1 total devices, 1 new, 0 disconnected.

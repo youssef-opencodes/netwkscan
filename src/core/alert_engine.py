@@ -15,16 +15,18 @@ class AlertEngine:
 
     def __init__(self) -> None:
         self._alerts: list[dict[str, Any]] = []
+        self._previous_ports: dict[str, dict[str, str]] = {}
         self._lock = threading.Lock()
 
     def process_scan_result(self, analysis_result: dict[str, Any]) -> list[dict[str, Any]]:
         """Process scan results returned by core.analyzer.analyze_scan().
 
-        Generates alert objects for new, disconnected, and returned devices.
+        Generates alert objects for new, disconnected, and returned devices,
+        as well as new open ports, closed ports, and service changes.
 
         Args:
             analysis_result: Dict containing 'new', 'returned', 'disconnected',
-                'timestamp' keys.
+                'timestamp', and optional 'scan_results' or 'devices' keys.
 
         Returns:
             List of newly generated alert dictionaries for this scan.
@@ -73,10 +75,91 @@ class AlertEngine:
             generated_alerts.append(alert)
             log_event(alert["message"], "warning")
 
+        # Process PORT and SERVICE changes
+        scan_devices = analysis_result.get("scan_results") or analysis_result.get("devices") or []
+        for dev in scan_devices:
+            if not isinstance(dev, dict):
+                continue
+            ip = dev.get("ip")
+            if not ip or "ports" not in dev:
+                continue
+
+            current_ports = dev.get("ports") or {}
+            if not isinstance(current_ports, dict):
+                continue
+
+            port_alerts = self._analyze_port_changes(ip, current_ports, timestamp)
+            generated_alerts.extend(port_alerts)
+
         with self._lock:
             self._alerts.extend(generated_alerts)
 
         return generated_alerts
+
+    def _analyze_port_changes(
+        self, ip: str, current_ports: dict[str, str], timestamp: str
+    ) -> list[dict[str, Any]]:
+        """Compare previous and current open ports for a device and return port alert dicts."""
+        alerts: list[dict[str, Any]] = []
+
+        with self._lock:
+            if ip not in self._previous_ports:
+                self._previous_ports[ip] = current_ports.copy()
+                return alerts
+            prev_ports = self._previous_ports[ip]
+
+        # 1. Detect New Open Ports ("New Open Port Detected")
+        added_ports = set(current_ports.keys()) - set(prev_ports.keys())
+        for port in sorted(added_ports, key=lambda x: int(x) if x.isdigit() else x):
+            svc = current_ports[port]
+            alert = {
+                "type": "NEW_OPEN_PORT",
+                "message": f"New Open Port Detected on {ip}: {port} ({svc})",
+                "ip": ip,
+                "port": port,
+                "service": svc,
+                "timestamp": timestamp,
+            }
+            alerts.append(alert)
+            log_event(alert["message"], "warning")
+
+        # 2. Detect Closed Ports ("Port Closed")
+        closed_ports = set(prev_ports.keys()) - set(current_ports.keys())
+        for port in sorted(closed_ports, key=lambda x: int(x) if x.isdigit() else x):
+            old_svc = prev_ports[port]
+            alert = {
+                "type": "PORT_CLOSED",
+                "message": f"Port Closed on {ip}: {port} ({old_svc})",
+                "ip": ip,
+                "port": port,
+                "service": old_svc,
+                "timestamp": timestamp,
+            }
+            alerts.append(alert)
+            log_event(alert["message"], "info")
+
+        # 3. Detect Service Changes
+        common_ports = set(current_ports.keys()) & set(prev_ports.keys())
+        for port in sorted(common_ports, key=lambda x: int(x) if x.isdigit() else x):
+            if prev_ports[port] != current_ports[port]:
+                alert = {
+                    "type": "SERVICE_CHANGED",
+                    "message": f"Service changed on {ip} port {port}: {prev_ports[port]} -> {current_ports[port]}",
+                    "ip": ip,
+                    "port": port,
+                    "old_service": prev_ports[port],
+                    "new_service": current_ports[port],
+                    "timestamp": timestamp,
+                }
+                alerts.append(alert)
+                log_event(alert["message"], "warning")
+
+        # Update historical cache
+        with self._lock:
+            self._previous_ports[ip] = current_ports.copy()
+
+        return alerts
+
 
     def get_alerts(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Return generated alerts, newest first.

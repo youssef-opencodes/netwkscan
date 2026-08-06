@@ -18,3 +18,8 @@ pyinstaller>=6.21.0
 
 # Additional utilities
 pillow>=10.3.0
+
+# Export utilities
+reportlab>=4.0.0
+openpyxl>=3.1.0
+

@@ -99,6 +99,20 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "scan_type": "quick",
     "port_range": "1-1024",
     "theme": "dark",
+    # Developer 2 fields
+    "selected_preset": "Quick",
+    "last_used_preset": "Quick",
+    "custom_scan_settings": {
+        "timing": "-T4",
+        "verbosity": "-v",
+        "min_hostgroup": 32,
+        "max_hostgroup": 64,
+        "host_timeout": "5m",
+        "arguments": "-sV -O",
+    },
+    "default_scan_target": "192.168.1.0/24",
+    "last_timing_template": "-T4",
+    "last_port_configuration": "1-1024",
 }
 
 VALID_SCAN_TYPES = {"quick", "full", "custom"}
@@ -133,8 +147,12 @@ def validate_config(config: dict[str, Any]) -> tuple[bool, str]:
 
     # Validate scan_type
     scan_type = config.get("scan_type")
-    if scan_type not in VALID_SCAN_TYPES:
-        return False, f"scan_type must be one of {sorted(VALID_SCAN_TYPES)}."
+    if not isinstance(scan_type, str) or not scan_type.strip():
+        return False, "scan_type must be a non-empty string."
+    known_types = {"quick", "full", "custom", "ping", "version", "os", "intense"}
+    if scan_type.lower() not in known_types and scan_type not in VALID_SCAN_TYPES:
+        return False, f"scan_type must be one of standard types or valid presets, got '{scan_type}'."
+
 
     # Validate port_range
     port_range = config.get("port_range")
@@ -142,6 +160,7 @@ def validate_config(config: dict[str, Any]) -> tuple[bool, str]:
         return False, "port_range must be a non-empty string."
 
     return True, ""
+
 
 
 def load_config(path: str | Path | None = None) -> dict[str, Any]:

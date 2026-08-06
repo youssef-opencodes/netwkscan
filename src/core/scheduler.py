@@ -28,6 +28,7 @@ class NetworkScheduler:
 
         cfg = load_config()
         self._interval = float(interval if interval is not None else cfg.get("scan_interval", 60))
+        self._preset_name: str | None = None
 
         self._thread: threading.Thread | None = None
         self._stop_event = threading.Event()
@@ -50,11 +51,20 @@ class NetworkScheduler:
         """Get the current scan interval in seconds."""
         return self._interval
 
+    def set_preset(self, preset_name: str) -> None:
+        """Set active scan preset name for the scheduler."""
+        self._preset_name = preset_name
+        log_event(f"Scheduler preset updated to '{preset_name}'.", "info")
+
+    def get_preset(self) -> str | None:
+        """Get active scan preset name."""
+        return self._preset_name
+
     def _execute_scan(self) -> dict[str, Any] | None:
         """Perform a single scan execution pipeline.
 
         Prevents overlapping scans if a scan is already running.
-        Pipeline: Scanner -> Analyzer -> Database -> AlertEngine.
+        Pipeline: Scheduler -> Load Preset -> Generate Command -> Run Scan -> Analyzer -> DB -> AlertEngine.
         """
         if not self._scan_lock.acquire(blocking=False):
             log_event("Scan already in progress. Skipping duplicate scan run.", "warning")
@@ -63,22 +73,47 @@ class NetworkScheduler:
         self._is_scanning = True
         try:
             cfg = load_config()
-            target = cfg.get("subnet", "192.168.1.0/24")
+            target = cfg.get("subnet") or cfg.get("default_scan_target", "192.168.1.0/24")
             scan_type = cfg.get("scan_type", "quick")
             port_range = cfg.get("port_range", "1-1024")
 
-            log_event(f"Scheduler starting '{scan_type}' scan on target '{target}'.", "info")
+            # Determine if explicit preset or preset scan_type is configured
+            preset_name = self._preset_name
+            if not preset_name and scan_type not in ("quick", "full", "custom"):
+                preset_name = scan_type
 
-            # 1. Run Nmap scan
-            if scan_type == "full":
-                scan_results, duration = self.scanner.full_scan(target, port_range)
-            elif scan_type == "custom":
-                scan_results, duration = self.scanner.custom_scan(target, port_range)
+            preset_data = None
+            if preset_name:
+                try:
+                    from presets import get_preset
+                    preset_data = get_preset(preset_name)
+                except Exception as p_err:
+                    log_event(f"Failed to fetch preset '{preset_name}': {p_err}", "warning")
+
+            if preset_data:
+                log_event(f"Scheduler starting preset '{preset_name}' scan on target '{target}'.", "info")
+                p_args = preset_data.get("args")
+                p_ports = preset_data.get("ports")
+                scan_results, duration = self.scanner.custom_scan(
+                    target=target,
+                    ports=p_ports if p_ports else None,
+                    arguments=p_args,
+                )
             else:
-                scan_results, duration = self.scanner.quick_scan(target)
+                log_event(f"Scheduler starting '{scan_type}' scan on target '{target}'.", "info")
+                if scan_type == "full":
+                    scan_results, duration = self.scanner.full_scan(target, port_range)
+                elif scan_type == "custom":
+                    scan_results, duration = self.scanner.custom_scan(target, port_range)
+                else:
+                    scan_results, duration = self.scanner.quick_scan(target)
+
 
             # 2. Compare scan results with DB using Dev 1's analyzer
             analysis = analyzer.analyze_scan(scan_results)
+
+            # Extract generated command from scanner for audit trail
+            scan_cmd = getattr(self.scanner, "last_command", None)
 
             # 3. Add scan record using Dev 1's database API
             scan_record_data = {
@@ -87,6 +122,7 @@ class NetworkScheduler:
                 "total_devices": len(scan_results),
                 "new_devices": len(analysis.get("new", [])),
                 "disconnected_devices": len(analysis.get("disconnected", [])),
+                "scan_command": scan_cmd,
             }
             database.add_scan(scan_record_data)
 
@@ -99,6 +135,7 @@ class NetworkScheduler:
                 "info",
             )
             return analysis
+
 
         except Exception as exc:
             log_event(f"Error during scheduler scan execution: {exc}", "error")
