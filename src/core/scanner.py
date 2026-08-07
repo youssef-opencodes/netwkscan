@@ -253,6 +253,10 @@ class Scanner:
         arg_list = []
         if arguments and arguments.strip():
             arg_list.append(arguments.strip())
+        else:
+            # Default to host discovery plus a lightweight port scan so local-network devices
+            # that are up but not exposing common ports still appear in results.
+            arg_list.append("-sn")
         if timing is not None:
             t_str = str(timing).strip()
             if not t_str.startswith("-T") and t_str.isdigit():
@@ -280,6 +284,12 @@ class Scanner:
             nm = nmap.PortScanner()
             nm.scan(hosts=target.strip(), ports=ports if ports else None, arguments=nmap_args or "")
             results = self.parse_nmap_results(nm)
+
+            if not results and arguments and "-sn" in arguments:
+                # Fallback to a standard TCP scan for the same target if host discovery returned none.
+                nm = nmap.PortScanner()
+                nm.scan(hosts=target.strip(), ports=ports or "1-1024", arguments="-sS -T4")
+                results = self.parse_nmap_results(nm)
         except nmap.PortScannerError as nmap_err:
             log_event(f"Nmap execution failed: {nmap_err}", "error")
         except Exception as exc:

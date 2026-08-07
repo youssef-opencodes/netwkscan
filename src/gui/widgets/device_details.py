@@ -14,9 +14,7 @@ from core.database import get_device_by_ip
 from gui.resources import color, font, layout, status_color
 from gui.widgets.device_card import PLACEHOLDER, device_value
 
-# The current schema (Developer 1) has no PORTS table, so open ports are not
-# persisted yet. We display a graceful placeholder instead of inventing fields.
-OPEN_PORTS_PLACEHOLDER = "Not available"
+# Open ports will be displayed dynamically
 
 
 def format_datetime(value: Any) -> str:
@@ -106,14 +104,13 @@ class DeviceDetails(ctk.CTkToplevel):
             ("ip", device_value(device, "ip")),
             ("mac", device_value(device, "mac")),
             ("hostname", device_value(device, "hostname")),
+            ("device type", device_value(device, "device_type", "Unknown")),
             ("vendor", device_value(device, "vendor")),
             ("os", device_value(device, "os")),
             ("status", device_value(device, "status")),
-            ("custom label", device_value(device, "custom_label")),
             ("first seen", format_datetime(device_value(device, "first_seen"))),
             ("last seen", format_datetime(device_value(device, "last_seen"))),
             ("appearance count", device_value(device, "appearance_count", 0)),
-            ("open ports", OPEN_PORTS_PLACEHOLDER),
         ]
 
         body = ctk.CTkScrollableFrame(self, fg_color=color("bg_primary"))
@@ -121,7 +118,6 @@ class DeviceDetails(ctk.CTkToplevel):
         body.grid_columnconfigure(1, weight=1)
 
         for index, (key, value) in enumerate(rows):
-            is_placeholder = value == OPEN_PORTS_PLACEHOLDER
             ctk.CTkLabel(
                 body,
                 text=key,
@@ -133,11 +129,75 @@ class DeviceDetails(ctk.CTkToplevel):
                 body,
                 text=str(value),
                 font=font("size_body", mono=key in ("ip", "mac")),
-                text_color=color("text_muted") if is_placeholder else color("text_primary"),
+                text_color=color("text_primary"),
                 anchor="e",
                 wraplength=240,
                 justify="right",
             ).grid(row=index, column=1, sticky="e", padx=(0, 8), pady=5)
+
+        cur_row = len(rows)
+
+        # Custom Label
+        ctk.CTkLabel(
+            body,
+            text="custom label",
+            font=font("size_body"),
+            text_color=color("text_secondary"),
+            anchor="w",
+        ).grid(row=cur_row, column=0, sticky="w", padx=(8, 12), pady=5)
+
+        label_frame = ctk.CTkFrame(body, fg_color="transparent")
+        label_frame.grid(row=cur_row, column=1, sticky="e", padx=(0, 8), pady=5)
+
+        self._label_entry = ctk.CTkEntry(
+            label_frame,
+            width=160,
+            font=font("size_body"),
+            fg_color=color("bg_secondary"),
+            text_color=color("text_primary"),
+            border_color=color("border")
+        )
+        self._label_entry.pack(side="left", padx=(0, 4))
+        
+        current_label = str(device_value(device, "custom_label", ""))
+        if current_label != PLACEHOLDER:
+            self._label_entry.insert(0, current_label)
+
+        ctk.CTkButton(
+            label_frame,
+            text="Save",
+            width=50,
+            font=font("size_small"),
+            fg_color=color("accent"),
+            hover_color=color("accent_hover"),
+            command=self._save_label
+        ).pack(side="left")
+
+        cur_row += 1
+
+        # Open Ports
+        ctk.CTkLabel(
+            body,
+            text="open ports",
+            font=font("size_body"),
+            text_color=color("text_secondary"),
+            anchor="nw",
+        ).grid(row=cur_row, column=0, sticky="nw", padx=(8, 12), pady=5)
+
+        ports = device_value(device, "ports", {})
+        if not ports or ports == PLACEHOLDER:
+            ports_text = "No open ports found"
+        else:
+            ports_text = "\n".join([f"{p} → {s}" for p, s in ports.items()])
+
+        ctk.CTkLabel(
+            body,
+            text=ports_text,
+            font=font("size_body", mono=True),
+            text_color=color("text_primary"),
+            anchor="e",
+            justify="right",
+        ).grid(row=cur_row, column=1, sticky="e", padx=(0, 8), pady=5)
 
         ctk.CTkButton(
             self,
@@ -150,6 +210,13 @@ class DeviceDetails(ctk.CTkToplevel):
             corner_radius=layout("radius", 10),
             command=self.destroy,
         ).pack(pady=(0, 14))
+
+    def _save_label(self) -> None:
+        from core.database import update_device_label
+        ip = str(device_value(self.device, "ip"))
+        new_label = self._label_entry.get().strip()
+        update_device_label(ip, new_label)
+        self.title(f"Device — {ip} (Saved)")
 
 
 def show_device_details(master: Any, device: Any) -> DeviceDetails | None:

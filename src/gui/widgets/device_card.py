@@ -9,6 +9,7 @@ from typing import Any, Callable
 import customtkinter as ctk
 
 from gui.resources import color, font, layout, status_color
+from gui.widgets.port_badge import PortBadge
 
 PLACEHOLDER = "—"
 
@@ -103,7 +104,16 @@ class DeviceCard(ctk.CTkFrame):
             wraplength=190,
             justify="left",
         )
-        self._vendor_label.grid(row=2, column=0, columnspan=2, sticky="ew", padx=pad, pady=(2, pad))
+        self._vendor_label.grid(row=2, column=0, columnspan=2, sticky="ew", padx=pad, pady=(2, 4))
+        
+        self._ports = device_value(device, "ports", {})
+        if self._ports:
+            port_list = list(self._ports.keys())
+            badge_container = ctk.CTkFrame(self, fg_color="transparent")
+            badge_container.grid(row=3, column=0, columnspan=2, sticky="ew", padx=pad, pady=(0, pad))
+            PortBadge(badge_container, port_count=len(self._ports), port_list=port_list).pack(side="left")
+        else:
+            self._vendor_label.grid(row=2, column=0, columnspan=2, sticky="ew", padx=pad, pady=(2, pad))
 
         self._bind_recursive(self)
 
