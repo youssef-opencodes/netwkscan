@@ -99,7 +99,31 @@ class LogsPage(ctk.CTkFrame):
             text_color=color("button_text"),
             corner_radius=layout("radius", 10),
             command=self._load_data,
-        ).grid(row=0, column=2, padx=(10, 0))
+        ).grid(row=0, column=2, padx=(10, 8))
+
+        ctk.CTkButton(
+            filter_row,
+            text="CSV",
+            width=60,
+            font=font("size_body"),
+            fg_color=color("button_bg"),
+            hover_color=color("button_hover"),
+            text_color=color("button_text"),
+            corner_radius=layout("radius", 10),
+            command=self._export_csv,
+        ).grid(row=0, column=3, padx=(0, 8))
+
+        ctk.CTkButton(
+            filter_row,
+            text="PDF",
+            width=60,
+            font=font("size_body"),
+            fg_color=color("button_bg"),
+            hover_color=color("button_hover"),
+            text_color=color("button_text"),
+            corner_radius=layout("radius", 10),
+            command=self._export_pdf,
+        ).grid(row=0, column=4)
 
     def _build_log_list(self) -> None:
         """Build scrollable container for log entries."""
@@ -340,3 +364,23 @@ class LogsPage(ctk.CTkFrame):
     def refresh(self) -> None:
         """Manually refresh the logs."""
         self._load_data()
+
+    def _export_csv(self) -> None:
+        from utils.exporter import export_to_csv
+        try:
+            scans = self._filter_scans()
+            scan_dicts = [s.to_dict() if hasattr(s, "to_dict") else s for s in scans]
+            path = export_to_csv(scan_dicts)
+            self._count_label.configure(text=f"Exported to {path}")
+        except Exception as e:
+            log_event(f"Logs CSV export failed: {e}", "error")
+
+    def _export_pdf(self) -> None:
+        from utils.exporter import export_to_pdf
+        try:
+            scans = self._filter_scans()
+            scan_dicts = [s.to_dict() if hasattr(s, "to_dict") else s for s in scans]
+            path = export_to_pdf(scan_dicts)
+            self._count_label.configure(text=f"Exported to {path}")
+        except Exception as e:
+            log_event(f"Logs PDF export failed: {e}", "error")

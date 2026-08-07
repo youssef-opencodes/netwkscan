@@ -95,7 +95,31 @@ class MainPage(ctk.CTkFrame):
             state="normal" if self._scan_enabled else "disabled",
             command=self._handle_scan_request,
         )
-        self._scan_button.grid(row=0, column=4)
+        self._scan_button.grid(row=0, column=4, padx=(0, 8))
+
+        ctk.CTkButton(
+            header,
+            text="CSV",
+            width=60,
+            font=font("size_body"),
+            fg_color=color("button_bg"),
+            hover_color=color("button_hover"),
+            text_color=color("button_text"),
+            corner_radius=layout("radius", 10),
+            command=self._export_csv,
+        ).grid(row=0, column=5, padx=(0, 8))
+
+        ctk.CTkButton(
+            header,
+            text="PDF",
+            width=60,
+            font=font("size_body"),
+            fg_color=color("button_bg"),
+            hover_color=color("button_hover"),
+            text_color=color("button_text"),
+            corner_radius=layout("radius", 10),
+            command=self._export_pdf,
+        ).grid(row=0, column=6)
 
     def _build_counters(self) -> None:
         row = ctk.CTkFrame(self, fg_color="transparent")
@@ -406,6 +430,24 @@ class MainPage(ctk.CTkFrame):
             state="normal" if enabled else "disabled",
             fg_color=color("accent") if enabled else color("button_bg"),
         )
+
+    def _export_csv(self) -> None:
+        from utils.exporter import export_to_csv
+        try:
+            device_dicts = [d.to_dict() if hasattr(d, "to_dict") else d for d in self._devices]
+            path = export_to_csv(device_dicts)
+            self._updated_label.configure(text=f"Exported to {path}")
+        except Exception as e:
+            log_event(f"CSV export failed: {e}", "error")
+
+    def _export_pdf(self) -> None:
+        from utils.exporter import export_to_pdf
+        try:
+            device_dicts = [d.to_dict() if hasattr(d, "to_dict") else d for d in self._devices]
+            path = export_to_pdf(device_dicts)
+            self._updated_label.configure(text=f"Exported to {path}")
+        except Exception as e:
+            log_event(f"PDF export failed: {e}", "error")
 
     # ------------------------------------------------------------------
     # Auto refresh

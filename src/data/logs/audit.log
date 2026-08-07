@@ -403,3 +403,173 @@ FROM devices ORDER BY devices.last_seen DESC]
 2026-08-06 12:13:08 | INFO     | nmd | Scheduler stopped.
 2026-08-06 12:13:08 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
 2026-08-06 12:13:08 | INFO     | nmd | Scheduler scan completed successfully: 1 total devices, 1 new, 0 disconnected.
+2026-08-07 16:24:29 | INFO     | nmd | Starting NMD application...
+2026-08-07 16:24:29 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 16:24:29 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 16:24:29 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 16:24:30 | INFO     | nmd | Launching GUI main window.
+2026-08-07 16:24:31 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:31 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:31 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-07 16:24:31 | INFO     | nmd | Executing dynamic scan: nmap -sn 10.222.83.0/24
+2026-08-07 16:24:31 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:31 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:31 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:42 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:42 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:42 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:42 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:42 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:42 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:43 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:43 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:43 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:43 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:43 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:43 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:24:43 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:24:43 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:24:43 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:05 | ERROR    | nmd | Nmap execution failed: b'<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE nmaprun>\n<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>\n<!-- Nmap 7.92 scan initiated Fri Aug  7 16:24:31 2026 as: nmap -oX - -sn 10.222.83.0/24 -->\n<nmaprun scanner="nmap" args="nmap -oX - -sn 10.222.83.0/24" start="1786116271" startstr="Fri Aug  7 16:24:31 2026" version="7.92" xmloutputversion="1.05">\n'
+2026-08-07 16:25:05 | INFO     | nmd | Scan finished in 33.54s. Devices found: 0
+2026-08-07 16:25:09 | INFO     | nmd | Starting NMD application...
+2026-08-07 16:25:09 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 16:25:09 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 16:25:09 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 16:25:09 | INFO     | nmd | Launching GUI main window.
+2026-08-07 16:25:10 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:10 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:10 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-07 16:25:10 | INFO     | nmd | Executing dynamic scan: nmap -sn 10.222.83.0/24
+2026-08-07 16:25:11 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:11 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:11 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:12 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:12 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:12 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:13 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:13 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:13 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:13 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:13 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:14 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:14 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:14 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:14 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:25:14 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:25:14 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:25:16 | INFO     | nmd | GUI closed by user.
+2026-08-07 16:29:37 | INFO     | nmd | Starting NMD application...
+2026-08-07 16:29:37 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 16:29:37 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 16:29:37 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 16:29:38 | INFO     | nmd | Launching GUI main window.
+2026-08-07 16:29:39 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:29:39 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:29:39 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-07 16:29:39 | INFO     | nmd | Executing dynamic scan: nmap -sn 10.222.83.0/24
+2026-08-07 16:29:40 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:29:40 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:29:40 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:29:40 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:29:40 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:29:40 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:29:40 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 16:29:40 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 16:29:40 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 16:29:50 | INFO     | nmd | GUI closed by user.
+2026-08-07 18:42:44 | INFO     | nmd | Starting NMD application...
+2026-08-07 18:42:44 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 18:42:44 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 18:42:44 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 18:42:44 | INFO     | nmd | Launching GUI main window.
+2026-08-07 18:42:48 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:42:48 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:42:48 | INFO     | nmd | Scheduler starting 'quick' scan on target '10.222.83.0/24'.
+2026-08-07 18:42:48 | INFO     | nmd | Executing dynamic scan: nmap -sn 10.222.83.0/24
+2026-08-07 18:42:51 | INFO     | nmd | Scan finished in 2.82s. Devices found: 0
+2026-08-07 18:42:51 | WARNING  | nmd | Device disconnected: 127.0.0.1
+2026-08-07 18:42:51 | INFO     | nmd | Scheduler scan completed successfully: 0 total devices, 0 new, 1 disconnected.
+2026-08-07 18:42:58 | INFO     | nmd | GUI closed by user.
+2026-08-07 18:43:47 | INFO     | nmd | Starting NMD application...
+2026-08-07 18:43:47 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 18:43:47 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 18:43:47 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 18:43:47 | INFO     | nmd | Launching GUI main window.
+2026-08-07 18:43:49 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:43:49 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:43:49 | INFO     | nmd | Scheduler starting 'quick' scan on target '192.168.0.0/24'.
+2026-08-07 18:43:49 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.0.0/24
+2026-08-07 18:43:59 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:43:59 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 18:43:59 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:44:01 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:44:01 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 18:44:01 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:44:07 | INFO     | nmd | GUI closed by user.
+2026-08-07 18:44:45 | INFO     | nmd | Starting NMD application...
+2026-08-07 18:44:45 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 18:44:45 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 18:44:45 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 18:44:46 | INFO     | nmd | Launching GUI main window.
+2026-08-07 18:48:43 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:48:43 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:48:43 | INFO     | nmd | Scheduler starting 'quick' scan on target '192.168.0.0/24'.
+2026-08-07 18:48:43 | INFO     | nmd | Executing dynamic scan: nmap -sn 192.168.0.0/24
+2026-08-07 18:48:45 | INFO     | nmd | Scan finished in 2.56s. Devices found: 2
+2026-08-07 18:48:45 | INFO     | nmd | New device detected: 192.168.0.1
+2026-08-07 18:48:45 | INFO     | nmd | New device detected: 192.168.0.101
+2026-08-07 18:48:45 | INFO     | nmd | Scheduler scan completed successfully: 2 total devices, 2 new, 0 disconnected.
+2026-08-07 18:50:44 | INFO     | nmd | Starting NMD application...
+2026-08-07 18:50:44 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 18:50:44 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 18:50:44 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 18:50:44 | INFO     | nmd | Launching GUI main window.
+2026-08-07 18:50:48 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:50:48 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:50:48 | INFO     | nmd | Scheduler starting 'full' scan on target '192.168.0.0/24'.
+2026-08-07 18:50:48 | INFO     | nmd | Executing dynamic scan: nmap -sV -O -A -p 1-1024 192.168.0.0/24
+2026-08-07 18:50:53 | INFO     | nmd | GUI closed by user.
+2026-08-07 18:51:03 | INFO     | nmd | Starting NMD application...
+2026-08-07 18:51:03 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 18:51:03 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 18:51:03 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 18:51:04 | INFO     | nmd | Launching GUI main window.
+2026-08-07 18:51:07 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:51:07 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:51:07 | INFO     | nmd | Scheduler starting 'full' scan on target '192.168.0.0/24'.
+2026-08-07 18:51:07 | INFO     | nmd | Executing dynamic scan: nmap -sV -O -A -p 1-1024 192.168.0.0/24
+2026-08-07 18:53:44 | INFO     | nmd | Manual scan requested via scheduler run_now().
+2026-08-07 18:53:44 | WARNING  | nmd | Scan already in progress. Skipping duplicate scan run.
+2026-08-07 18:53:44 | INFO     | nmd | Manual scan triggered from dashboard.
+2026-08-07 18:53:47 | INFO     | nmd | GUI closed by user.
+2026-08-07 18:59:35 | INFO     | nmd | Starting NMD application...
+2026-08-07 18:59:35 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-07 18:59:36 | INFO     | nmd | Developer 4 page 'custom_scan' registered automatically.
+2026-08-07 18:59:36 | INFO     | nmd | Developer 4 page 'logs' registered automatically.
+2026-08-07 18:59:36 | INFO     | nmd | Launching GUI main window.

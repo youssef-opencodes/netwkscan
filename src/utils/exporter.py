@@ -60,16 +60,33 @@ def export_to_pdf(devices: list[dict], path: str | None = None) -> str:
     styles = getSampleStyleSheet()
 
     header = [f.replace("_", " ").title() for f in FIELDS]
+    
+    if not rows:
+        doc = SimpleDocTemplate(path, pagesize=landscape(A4))
+        doc.build([
+            Paragraph("NMD - Device Report", styles["Title"]),
+            Paragraph(
+                f"Generated on {datetime.now().strftime('%Y-%m-%d %H:%M')} — 0 device(s)",
+                styles["Normal"],
+            ),
+            Spacer(1, 12),
+            Paragraph("No devices found.", styles["Normal"]),
+        ])
+        return path
+
     table_data = [header] + [[str(row.get(f, "") or "") for f in FIELDS] for row in rows]
 
     table = Table(table_data, repeatRows=1)
-    table.setStyle(TableStyle([
+    table_style = [
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2563eb")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("FONTSIZE", (0, 0), (-1, -1), 8),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f4f7fc")]),
-    ]))
+    ]
+    if len(rows) > 0:
+        table_style.append(("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f4f7fc")]))
+    
+    table.setStyle(TableStyle(table_style))
 
     doc = SimpleDocTemplate(path, pagesize=landscape(A4))
     doc.build([
