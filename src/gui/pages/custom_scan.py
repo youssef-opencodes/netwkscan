@@ -1,50 +1,50 @@
-"""Custom scan page - Full Nmap GUI with presets, options, and results (Developer 4).
+"""Custom scan page - Full Nmap GUI with presets, options, live preview, and results.
 
-Complete rewrite with:
-- Target input
+Features:
+- Target input with CIDR validation
 - Presets dropdown (default + custom)
-- Scan options checkboxes (-sV, -O, -A, -sC, -v, --traceroute, -sU, -sS)
-- Port specification (Common/All/Custom)
-- Performance settings (Timing T0-T5)
-- Save/Load/Delete Preset buttons
-- Nmap command preview
-- Start scan with results display
+- Dynamic scan options (-sV, -O, -A, -sC, -v, --traceroute, -sU, -sS)
+- Port specification (Common 1-1024, All 1-65535, Custom)
+- Performance settings (Timing T0-T5, Parallelism, Host Timeout)
+- Live Nmap command preview built central via Scanner.build_nmap_command
+- Real-time status indication: Preparing, Scanning, Parsing, Completed, Failed
+- Cancel Scan button for terminating background processes
+- Detailed error messages on Nmap missing, permission denied, invalid target, or execution errors
 """
+from __future__ import annotations
 
 import json
 import re
+import threading
 from pathlib import Path
+from typing import Any
 
 import customtkinter as ctk
 
 from core import analyzer, database
 from core.database import get_device_by_ip
-from core.scanner import Scanner
+from core.scanner import Scanner, ScanResult, validate_target
 from gui.resources import color, font, layout, status_color
 from gui.widgets.port_badge import PortBadge
 from gui.widgets.status_badge import StatusBadge
 from utils.config import load_config, update_config
 from utils.logger import log_event
 
-# Removed DEFAULT_PRESETS in favor of src/presets/default.json
-
 
 class CustomScanPage(ctk.CTkFrame):
-    """Full Nmap GUI with presets, options, performance, and results."""
+    """Full Nmap GUI with presets, options, performance, live command preview, and results."""
 
-    def __init__(self, master, **kwargs):
+    def __init__(self, master: Any, **kwargs: Any) -> None:
         super().__init__(master, fg_color=color("bg_primary"), **kwargs)
 
         self._scanner = Scanner()
-        self._scan_results = []
-        self._result_widgets = []
-        self._custom_presets = {}
+        self._scan_results: list[dict[str, Any]] = []
+        self._result_widgets: list[ctk.CTkBaseClass] = []
+        self._custom_presets: dict[str, Any] = {}
+        self._is_scanning: bool = False
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(9, weight=1)
-
-        # Load presets (handled dynamically now)
-        pass
 
         # Build UI sections
         self._build_target_section()
@@ -54,7 +54,7 @@ class CustomScanPage(ctk.CTkFrame):
         self._build_performance_section()
         self._build_preset_management()
         self._build_command_preview()
-        self._build_scan_button()
+        self._build_scan_controls()
         self._build_results_section()
 
         # Load defaults from config
@@ -64,28 +64,25 @@ class CustomScanPage(ctk.CTkFrame):
     # Preset Management
     # ------------------------------------------------------------------
 
-    def _load_presets(self):
-        pass
-
-    def _save_presets(self):
-        pass
-
-    def _get_all_presets(self):
+    def _get_all_presets(self) -> dict[str, Any]:
         """Return combined default + custom presets."""
-        from presets import load_presets
-        all_presets = load_presets()
-        for name, p in all_presets.items():
-            if "name" not in p:
-                p["name"] = name
-            if "args" in p:
-                p["arguments"] = p["args"]
-        return all_presets
+        try:
+            from presets import load_presets
+            all_presets = load_presets()
+            for name, p in all_presets.items():
+                if "name" not in p:
+                    p["name"] = name
+                if "args" in p:
+                    p["arguments"] = p["args"]
+            return all_presets
+        except Exception:
+            return {}
 
     # ------------------------------------------------------------------
     # UI Construction
     # ------------------------------------------------------------------
 
-    def _build_target_section(self):
+    def _build_target_section(self) -> None:
         """Build target input section."""
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.grid(row=0, column=0, sticky="ew", padx=16, pady=(14, 6))
@@ -100,7 +97,7 @@ class CustomScanPage(ctk.CTkFrame):
 
         self._target_entry = ctk.CTkEntry(
             frame,
-            placeholder_text="e.g. 192.168.0.0/24 or 192.168.0.105",
+            placeholder_text="e.g. 10.222.83.0/24 or 192.168.1.1",
             font=font("size_body"),
             fg_color=color("bg_secondary"),
             text_color=color("text_primary"),
@@ -110,8 +107,9 @@ class CustomScanPage(ctk.CTkFrame):
             height=38,
         )
         self._target_entry.grid(row=0, column=1, sticky="ew")
+        self._target_entry.bind("<KeyRelease>", lambda e: self._update_command_preview())
 
-    def _build_preset_section(self):
+    def _build_preset_section(self) -> None:
         """Build presets dropdown."""
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.grid(row=1, column=0, sticky="ew", padx=16, pady=(0, 6))
@@ -149,7 +147,7 @@ class CustomScanPage(ctk.CTkFrame):
         )
         self._preset_description.grid(row=0, column=2, sticky="w", padx=(12, 0))
 
-    def _build_options_section(self):
+    def _build_options_section(self) -> None:
         """Build scan options checkboxes."""
         frame = ctk.CTkFrame(
             self,
@@ -177,7 +175,7 @@ class CustomScanPage(ctk.CTkFrame):
             ("-sS", "SYN Stealth"),
         ]
 
-        self._option_vars = {}
+        self._option_vars: dict[str, ctk.StringVar] = {}
         for idx, (flag, label) in enumerate(options):
             row = 1 + (idx // 4)
             col = idx % 4
@@ -206,8 +204,8 @@ class CustomScanPage(ctk.CTkFrame):
                 pady=4,
             )
 
-    def _build_port_section(self):
-        """Build port specification."""
+    def _build_port_section(self) -> None:
+        """Build port specification options."""
         frame = ctk.CTkFrame(
             self,
             fg_color=color("bg_secondary"),
@@ -260,8 +258,8 @@ class CustomScanPage(ctk.CTkFrame):
         self._custom_ports_entry.grid(row=1, column=3, sticky="w", padx=(0, 12), pady=4)
         self._custom_ports_entry.bind("<KeyRelease>", lambda e: self._update_command_preview())
 
-    def _build_performance_section(self):
-        """Build performance settings."""
+    def _build_performance_section(self) -> None:
+        """Build timing and performance controls."""
         frame = ctk.CTkFrame(
             self,
             fg_color=color("bg_secondary"),
@@ -349,15 +347,8 @@ class CustomScanPage(ctk.CTkFrame):
         timeout_entry.grid(row=2, column=1, sticky="w", padx=(0, 12), pady=4)
         timeout_entry.bind("<KeyRelease>", lambda e: self._update_command_preview())
 
-        ctk.CTkLabel(
-            frame,
-            text="(Optional)",
-            font=font("size_small"),
-            text_color=color("text_muted"),
-        ).grid(row=2, column=2, columnspan=2, sticky="w", padx=(12, 0), pady=4)
-
-    def _build_preset_management(self):
-        """Build Save/Load/Delete preset buttons."""
+    def _build_preset_management(self) -> None:
+        """Build Save/Load/Delete preset controls."""
         frame = ctk.CTkFrame(
             self,
             fg_color=color("bg_secondary"),
@@ -426,8 +417,8 @@ class CustomScanPage(ctk.CTkFrame):
         )
         delete_btn.grid(row=1, column=3, sticky="w", padx=(0, 12), pady=4)
 
-    def _build_command_preview(self):
-        """Build Nmap command preview."""
+    def _build_command_preview(self) -> None:
+        """Build live Nmap command preview box."""
         frame = ctk.CTkFrame(
             self,
             fg_color=color("bg_secondary"),
@@ -438,7 +429,7 @@ class CustomScanPage(ctk.CTkFrame):
 
         ctk.CTkLabel(
             frame,
-            text="Nmap Command",
+            text="Generated Nmap Command",
             font=font("size_small", weight="bold"),
             text_color=color("text_secondary"),
         ).grid(row=0, column=0, sticky="w", padx=12, pady=(8, 4))
@@ -455,13 +446,18 @@ class CustomScanPage(ctk.CTkFrame):
             wrap="none",
         )
         self._command_preview.grid(row=1, column=0, sticky="ew", padx=12, pady=(0, 10))
-        self._command_preview.insert("1.0", "nmap <target>")
+        self._command_preview.insert("1.0", "nmap 10.222.83.0/24")
         self._command_preview.configure(state="disabled")
 
-    def _build_scan_button(self):
-        """Build Start Scan button."""
+    def _build_scan_controls(self) -> None:
+        """Build Start Scan, Cancel Scan, and status indicator controls."""
+        btn_frame = ctk.CTkFrame(self, fg_color="transparent")
+        btn_frame.grid(row=7, column=0, sticky="ew", padx=16, pady=(0, 6))
+        btn_frame.grid_columnconfigure(0, weight=3)
+        btn_frame.grid_columnconfigure(1, weight=1)
+
         self._scan_button = ctk.CTkButton(
-            self,
+            btn_frame,
             text="▶ Start Scan",
             font=font("size_body", weight="bold"),
             fg_color=color("accent"),
@@ -471,20 +467,52 @@ class CustomScanPage(ctk.CTkFrame):
             height=44,
             command=self._start_scan,
         )
-        self._scan_button.grid(row=7, column=0, sticky="ew", padx=16, pady=(0, 6))
+        self._scan_button.grid(row=0, column=0, sticky="ew", padx=(0, 8))
+
+        self._cancel_button = ctk.CTkButton(
+            btn_frame,
+            text="⏹ Cancel Scan",
+            font=font("size_body", weight="bold"),
+            fg_color="#DC2626",
+            hover_color="#B91C1C",
+            text_color="#FFFFFF",
+            corner_radius=layout("radius", 10),
+            height=44,
+            state="disabled",
+            command=self._cancel_scan,
+        )
+        self._cancel_button.grid(row=0, column=1, sticky="ew")
+
+        # Status text & badge
+        status_box = ctk.CTkFrame(self, fg_color="transparent")
+        status_box.grid(row=8, column=0, sticky="ew", padx=16, pady=(0, 4))
+        status_box.grid_columnconfigure(1, weight=1)
+
+        self._state_badge = ctk.CTkLabel(
+            status_box,
+            text="READY",
+            font=font("size_small", weight="bold"),
+            fg_color=color("bg_tertiary"),
+            text_color=color("text_primary"),
+            corner_radius=6,
+            padx=10,
+            pady=4,
+        )
+        self._state_badge.grid(row=0, column=0, sticky="w", padx=(0, 8))
 
         self._status_label = ctk.CTkLabel(
-            self,
-            text="",
+            status_box,
+            text="Ready to scan.",
             font=font("size_small"),
             text_color=color("text_muted"),
+            anchor="w",
         )
-        self._status_label.grid(row=7, column=0, sticky="w", padx=16, pady=(0, 6))
+        self._status_label.grid(row=0, column=1, sticky="w")
 
-    def _build_results_section(self):
-        """Build results display area."""
+    def _build_results_section(self) -> None:
+        """Build results scrollable container."""
         results_header = ctk.CTkFrame(self, fg_color="transparent")
-        results_header.grid(row=8, column=0, sticky="ew", padx=16, pady=(0, 6))
+        results_header.grid(row=9, column=0, sticky="ew", padx=16, pady=(0, 6))
         results_header.grid_columnconfigure(0, weight=1)
 
         self._results_label = ctk.CTkLabel(
@@ -500,23 +528,43 @@ class CustomScanPage(ctk.CTkFrame):
             fg_color=color("bg_secondary"),
             corner_radius=layout("radius", 10),
         )
-        self._results_container.grid(row=9, column=0, sticky="nsew", padx=16, pady=(0, 14))
+        self._results_container.grid(row=10, column=0, sticky="nsew", padx=16, pady=(0, 14))
         self._results_container.grid_columnconfigure(0, weight=1)
 
     # ------------------------------------------------------------------
-    # Logic
+    # Logic & State Updates
     # ------------------------------------------------------------------
 
-    def _load_defaults(self):
-        """Load default target from config."""
+    def _load_defaults(self) -> None:
+        """Load default target from configuration."""
         try:
             config = load_config()
-            self._target_entry.insert(0, config.get("subnet", "192.168.0.0/24"))
-        except:
+            target_val = config.get("subnet", "10.222.83.0/24")
+            self._target_entry.delete(0, "end")
+            self._target_entry.insert(0, target_val)
+        except Exception:
             pass
+        self._update_command_preview()
 
-    def _on_preset_selected(self, preset_key: str):
-        """Apply selected preset."""
+    def _update_state(self, state_name: str, message: str, is_error: bool = False) -> None:
+        """Update UI scan lifecycle state badge and status label."""
+        badge_colors = {
+            "READY": (color("bg_tertiary"), color("text_primary")),
+            "PREPARING": ("#3B82F6", "#FFFFFF"),
+            "SCANNING": ("#F59E0B", "#FFFFFF"),
+            "PARSING": ("#8B5CF6", "#FFFFFF"),
+            "COMPLETED": ("#10B981", "#FFFFFF"),
+            "FAILED": ("#EF4444", "#FFFFFF"),
+        }
+        bg, fg = badge_colors.get(state_name, (color("bg_tertiary"), color("text_primary")))
+        self._state_badge.configure(text=state_name, fg_color=bg, text_color=fg)
+        self._status_label.configure(
+            text=message,
+            text_color="#EF4444" if is_error else color("text_primary"),
+        )
+
+    def _on_preset_selected(self, preset_key: str) -> None:
+        """Apply selected preset options to UI widgets."""
         if preset_key == "Select a preset...":
             return
 
@@ -550,28 +598,15 @@ class CustomScanPage(ctk.CTkFrame):
         elif preset.get("timing"):
             self._timing_var.set(str(preset.get("timing")))
 
-        timeout_match = re.search(r'--host-timeout\s+(\S+)', args)
-        if timeout_match:
-            self._host_timeout_var.set(timeout_match.group(1))
-        else:
-            self._host_timeout_var.set(str(preset.get("host_timeout") or ""))
-
-        hostgroup_match = re.search(r'--(?:min|max)-hostgroup\s+(\d+)', args)
-        if hostgroup_match:
-            self._parallelism_var.set(hostgroup_match.group(1))
-        else:
-            parallelism = preset.get("parallelism")
-            self._parallelism_var.set(str(parallelism) if parallelism is not None else "")
-
         self._update_command_preview()
 
-    def _clear_options(self):
+    def _clear_options(self) -> None:
         """Clear all option checkboxes."""
         for var in self._option_vars.values():
             var.set("off")
 
     def _get_selected_options(self) -> str:
-        """Get selected scan options as Nmap arguments."""
+        """Combine selected scan option checkboxes into argument string."""
         args = []
         for flag, var in self._option_vars.items():
             if var.get() == "on":
@@ -579,22 +614,19 @@ class CustomScanPage(ctk.CTkFrame):
         return " ".join(args)
 
     def _get_host_timeout(self) -> str | None:
-        """Get the host timeout string for Nmap."""
         timeout = self._host_timeout_var.get().strip()
         return timeout if timeout else None
 
     def _get_parallelism(self) -> int | None:
-        """Get the configured parallelism value."""
-        value = self._parallelism_var.get().strip()
-        if not value:
+        val = self._parallelism_var.get().strip()
+        if not val:
             return None
         try:
-            return max(1, int(value))
+            return max(1, int(val))
         except ValueError:
             return None
 
     def _get_ports(self) -> str | None:
-        """Get port specification."""
         port_type = self._port_var.get()
         if port_type == "common":
             return "1-1024"
@@ -604,92 +636,97 @@ class CustomScanPage(ctk.CTkFrame):
             ports = self._custom_ports_entry.get().strip()
             return ports if ports else None
 
-    def _build_nmap_command(self) -> str:
-        """Build full Nmap command from UI selections."""
-        target = self._target_entry.get().strip() or "<target>"
+    def _update_command_preview(self, _value: str | None = None) -> None:
+        """Update live command preview text using central build_nmap_command."""
+        target = self._target_entry.get().strip() or "10.222.83.0/24"
         options = self._get_selected_options()
         ports = self._get_ports()
+        timing = self._timing_var.get()
         host_timeout = self._get_host_timeout()
         parallelism = self._get_parallelism()
 
-        cmd = ["nmap", target]
-        if options:
-            cmd.extend(options.split())
-        timing = self._timing_var.get()
-        if timing:
-            cmd.append(timing)
-        if host_timeout:
-            cmd.extend(["--host-timeout", host_timeout])
-        if parallelism is not None:
-            cmd.extend(["--min-hostgroup", str(parallelism), "--max-hostgroup", str(parallelism)])
-        if ports:
-            cmd.extend(["-p", ports])
-        return " ".join(cmd)
+        cmd = self._scanner.build_nmap_command(
+            target=target,
+            ports=ports,
+            arguments=options,
+            timing=timing,
+            host_timeout=host_timeout,
+            min_hostgroup=parallelism,
+            max_hostgroup=parallelism,
+        )
 
-    def _update_command_preview(self, _value: str | None = None):
-        """Update the command preview text box."""
-        cmd = self._build_nmap_command()
         self._command_preview.configure(state="normal")
         self._command_preview.delete("1.0", "end")
         self._command_preview.insert("1.0", cmd)
         self._command_preview.configure(state="disabled")
 
-    def _save_custom_preset(self):
-        """Save current settings as a custom preset."""
+    def _save_custom_preset(self) -> None:
+        """Save current selections to custom presets."""
         name = self._preset_name_entry.get().strip()
         if not name:
-            self._show_status("Enter a preset name", "error")
+            self._update_state("FAILED", "Please enter a preset name", is_error=True)
             return
 
-        from presets import _load_json, DEFAULT_PATH, save_preset
-        defaults = _load_json(DEFAULT_PATH)
-        if name in defaults:
-            self._show_status(f"'{name}' is a default preset. Choose another name.", "error")
-            return
+        try:
+            from presets import save_preset
+            save_preset(
+                name=name,
+                args=self._get_selected_options(),
+                ports=self._get_ports() or "",
+                description=f"Custom: {name}"
+            )
+            self._refresh_presets_dropdown()
+            self._update_state("READY", f"Preset '{name}' saved successfully!")
+        except Exception as err:
+            self._update_state("FAILED", f"Failed to save preset: {err}", is_error=True)
 
-        save_preset(
-            name=name,
-            args=self._get_selected_options(),
-            ports=self._get_ports() or "",
-            description=f"Custom: {name}"
-        )
-
-        self._refresh_presets_dropdown()
-        self._show_status(f"Preset '{name}' saved!", "success")
-
-    def _load_custom_preset(self):
-        """Load a custom preset."""
+    def _load_custom_preset(self) -> None:
         name = self._preset_name_entry.get().strip()
         if not name or name not in self._get_all_presets():
-            self._show_status("Enter a valid preset name", "error")
+            self._update_state("FAILED", "Enter a valid preset name", is_error=True)
             return
-
         self._on_preset_selected(name)
-        self._show_status(f"Preset '{name}' loaded", "success")
+        self._update_state("READY", f"Preset '{name}' loaded")
 
-    def _delete_custom_preset(self):
-        """Delete a custom preset."""
+    def _delete_custom_preset(self) -> None:
         name = self._preset_name_entry.get().strip()
-        from presets import delete_preset
-        if not name or not delete_preset(name):
-            self._show_status("Enter a valid custom preset name", "error")
-            return
+        try:
+            from presets import delete_preset
+            if not name or not delete_preset(name):
+                self._update_state("FAILED", "Enter a valid custom preset name", is_error=True)
+                return
+            self._refresh_presets_dropdown()
+            self._update_state("READY", f"Preset '{name}' deleted")
+        except Exception as err:
+            self._update_state("FAILED", f"Failed to delete preset: {err}", is_error=True)
 
-        self._refresh_presets_dropdown()
-        self._show_status(f"Preset '{name}' deleted", "success")
-
-    def _refresh_presets_dropdown(self):
-        """Refresh the presets dropdown."""
+    def _refresh_presets_dropdown(self) -> None:
         keys = ["Select a preset..."] + list(self._get_all_presets().keys())
         self._preset_dropdown.configure(values=keys)
-        if hasattr(self._preset_dropdown, "set"):
-            self._preset_dropdown.set("Select a preset...")
+        self._preset_dropdown.set("Select a preset...")
 
-    def _start_scan(self):
-        """Execute the scan with selected options."""
+    def _cancel_scan(self) -> None:
+        """Cancel active scan subprocess."""
+        if self._is_scanning:
+            self._scanner.cancel_scan()
+            self._update_state("FAILED", "Scan cancelled by user.", is_error=True)
+            self._scan_button.configure(state="normal", text="▶ Start Scan")
+            self._cancel_button.configure(state="disabled")
+            self._is_scanning = False
+
+    def _start_scan(self) -> None:
+        """Execute scan workflow in background thread."""
         target = self._target_entry.get().strip()
-        if not target:
-            self._show_status("Please enter a target", "error")
+
+        # 1. Target Validation
+        is_valid_tgt, tgt_err = validate_target(target)
+        if not is_valid_tgt:
+            self._update_state("FAILED", tgt_err, is_error=True)
+            return
+
+        # 2. Binary Check
+        if not self._scanner.is_nmap_available():
+            self._update_state("FAILED", "Nmap is not installed or not found in system PATH.", is_error=True)
             return
 
         options = self._get_selected_options()
@@ -698,72 +735,97 @@ class CustomScanPage(ctk.CTkFrame):
         host_timeout = self._get_host_timeout()
         parallelism = self._get_parallelism()
 
+        self._is_scanning = True
         self._scan_button.configure(state="disabled", text="⏳ Scanning...")
-        self._show_status(f"Scanning {target}...", "info")
+        self._cancel_button.configure(state="normal")
+        self._update_state("SCANNING", f"Executing Nmap scan on {target}...")
 
-        import threading
-        def _scan_thread():
-            try:
-                results, duration = self._scanner.custom_scan(
-                    target=target,
-                    ports=ports,
-                    arguments=options,
-                    timing=timing,
-                    host_timeout=host_timeout,
-                    min_hostgroup=parallelism,
-                    max_hostgroup=parallelism,
-                )
-                self.after(0, self._on_scan_complete, results, duration)
-            except Exception as e:
-                self.after(0, self._on_scan_error, str(e))
-                
-        threading.Thread(target=_scan_thread, daemon=True).start()
+        def _worker() -> None:
+            self.after(0, lambda: self._update_state("SCANNING", f"Running Nmap subprocess on {target}..."))
+            scan_res: ScanResult = self._scanner.execute_scan(
+                target=target,
+                ports=ports,
+                arguments=options,
+                timing=timing,
+                host_timeout=host_timeout,
+                min_hostgroup=parallelism,
+                max_hostgroup=parallelism,
+            )
+            self.after(0, lambda: self._update_state("PARSING", "Parsing Nmap XML output..."))
+            self.after(0, self._on_scan_finished, scan_res)
 
-    def _on_scan_error(self, err_msg: str):
-        """Handle scan error on main thread."""
-        self._show_status(f"Error: {err_msg}", "error")
-        log_event(f"Custom scan failed: {err_msg}", "error")
+        threading.Thread(target=_worker, daemon=True).start()
+
+    def _on_scan_finished(self, scan_res: ScanResult) -> None:
+        """Process scan completion or failure on Tk main thread."""
+        self._is_scanning = False
         self._scan_button.configure(state="normal", text="▶ Start Scan")
+        self._cancel_button.configure(state="disabled")
 
-    def _on_scan_complete(self, results, duration):
-        """Handle scan completion on main thread."""
+        if not scan_res.success:
+            err_msg = scan_res.error_message or "Nmap scan failed."
+            self._update_state("FAILED", f"Error: {err_msg}", is_error=True)
+            log_event(f"Custom scan execution failed: {err_msg}", "error")
+            self._display_results([], scan_res.duration, error_message=err_msg)
+            return
+
+        # Success path
+        self._scan_results = scan_res.devices
+        self._display_results(scan_res.devices, scan_res.duration)
+
         try:
-            self._scan_results = results
-            self._display_results(results, duration)
+            analysis = analyzer.analyze_scan(scan_res.devices, scan_failed=False)
+            database.add_scan(
+                {
+                    "scan_date": __import__("datetime").datetime.utcnow(),
+                    "duration": scan_res.duration,
+                    "total_devices": len(scan_res.devices),
+                    "new_devices": len(analysis.get("new", [])),
+                    "disconnected_devices": len(analysis.get("disconnected", [])),
+                    "scan_command": scan_res.command,
+                }
+            )
+        except Exception as save_exc:
+            log_event(f"Failed to record scan in database: {save_exc}", "error")
 
-            try:
-                analysis = analyzer.analyze_scan(results)
-                scan_command = getattr(self._scanner, "last_command", "")
-                database.add_scan(
-                    {
-                        "scan_date": __import__("datetime").datetime.utcnow(),
-                        "duration": duration,
-                        "total_devices": len(results),
-                        "new_devices": len(analysis.get("new", [])),
-                        "disconnected_devices": len(analysis.get("disconnected", [])),
-                        "scan_command": scan_command,
-                    }
-                )
-            except Exception as save_exc:
-                log_event(f"Failed to save manual scan to database: {save_exc}", "error")
+        msg = f"Completed in {scan_res.duration}s — {len(scan_res.devices)} hosts found."
+        self._update_state("COMPLETED", msg)
 
-            self._show_status(f"Completed in {duration}s - {len(results)} devices found", "success")
-
-        except Exception as e:
-            self._show_status(f"Error: {str(e)}", "error")
-            log_event(f"Custom scan UI update failed: {e}", "error")
-
-        finally:
-            self._scan_button.configure(state="normal", text="▶ Start Scan")
-
-    def _display_results(self, results: list, duration: float):
-        """Display scan results as device cards."""
+    def _display_results(self, results: list[dict[str, Any]], duration: float, error_message: str = "") -> None:
+        """Display scan result cards or clear error banner."""
         for widget in self._result_widgets:
             widget.destroy()
         self._result_widgets = []
 
+        if error_message:
+            self._results_label.configure(
+                text=f"Scan Failed ({error_message})",
+                text_color="#EF4444",
+            )
+            empty = ctk.CTkFrame(self._results_container, fg_color="transparent")
+            empty.grid(row=0, column=0, sticky="nsew", pady=32)
+
+            ctk.CTkLabel(
+                empty,
+                text="⚠️ Scan Execution Error",
+                font=font("size_heading"),
+                text_color="#EF4444",
+            ).pack()
+
+            ctk.CTkLabel(
+                empty,
+                text=error_message,
+                font=font("size_body"),
+                text_color=color("text_primary"),
+                wraplength=600,
+            ).pack(pady=(6, 0))
+
+            self._result_widgets.append(empty)
+            return
+
         self._results_label.configure(
-            text=f"Results: {len(results)} devices found in {duration:.2f}s"
+            text=f"Results: {len(results)} devices found in {duration:.2f}s",
+            text_color=color("text_secondary"),
         )
 
         if not results:
@@ -772,14 +834,14 @@ class CustomScanPage(ctk.CTkFrame):
 
             ctk.CTkLabel(
                 empty,
-                text="No devices found",
+                text="No active hosts found",
                 font=font("size_heading"),
                 text_color=color("text_primary"),
             ).pack()
 
             ctk.CTkLabel(
                 empty,
-                text="Try changing the target or scan options.",
+                text="No responding devices were detected on this target.",
                 font=font("size_body"),
                 text_color=color("text_secondary"),
             ).pack(pady=(4, 0))
@@ -791,7 +853,6 @@ class CustomScanPage(ctk.CTkFrame):
         for idx, device_data in enumerate(results):
             row = idx // cols
             col = idx % cols
-
             card = self._create_result_card(device_data)
             card.grid(row=row, column=col, sticky="nsew", padx=6, pady=6)
             self._result_widgets.append(card)
@@ -799,8 +860,8 @@ class CustomScanPage(ctk.CTkFrame):
         for col in range(cols):
             self._results_container.grid_columnconfigure(col, weight=1, uniform="cards")
 
-    def _create_result_card(self, device_data: dict) -> ctk.CTkFrame:
-        """Create a card for a single device result."""
+    def _create_result_card(self, device: dict[str, Any]) -> ctk.CTkFrame:
+        """Create structured result card for host."""
         card = ctk.CTkFrame(
             self._results_container,
             fg_color=color("card_bg"),
@@ -808,88 +869,69 @@ class CustomScanPage(ctk.CTkFrame):
             border_width=1,
             corner_radius=layout("radius", 10),
         )
+        card.grid_columnconfigure(1, weight=1)
 
-        ip = device_data.get("ip", "Unknown")
-        hostname = device_data.get("hostname", "")
-        mac = device_data.get("mac", "")
-        vendor = device_data.get("vendor", "")
-        os_info = device_data.get("os", "")
-        ports = device_data.get("ports", {})
-
-        existing = get_device_by_ip(ip)
-        status = getattr(existing, "status", "online") if existing else "new"
-
-        pad = layout("card_padding", 12)
-
-        ip_frame = ctk.CTkFrame(card, fg_color="transparent")
-        ip_frame.pack(fill="x", padx=pad, pady=(pad, 0))
+        # Header: IP & Device Type
+        ip = device.get("ip", "Unknown")
+        dev_type = device.get("device_type", "Unknown")
+        hostname = device.get("hostname", "")
 
         ctk.CTkLabel(
-            ip_frame,
+            card,
             text=ip,
-            font=font("size_heading", mono=True),
+            font=font("size_body", weight="bold"),
+            text_color=color("accent"),
+        ).grid(row=0, column=0, sticky="w", padx=12, pady=(10, 2))
+
+        ctk.CTkLabel(
+            card,
+            text=dev_type,
+            font=font("size_small", weight="bold"),
+            fg_color=color("bg_tertiary"),
             text_color=color("text_primary"),
-            anchor="w",
-        ).pack(side="left")
-
-        StatusBadge(ip_frame, status=status, text="", dot_size=8).pack(side="left", padx=(8, 0))
-
-        if ports:
-            PortBadge(ip_frame, port_count=len(ports), port_list=list(ports.keys())).pack(side="left", padx=(8, 0))
+            corner_radius=4,
+            padx=6,
+            pady=2,
+        ).grid(row=0, column=1, sticky="e", padx=12, pady=(10, 2))
 
         if hostname:
             ctk.CTkLabel(
                 card,
-                text=f"🏷 {hostname}",
-                font=font("size_body"),
+                text=f"Host: {hostname}",
+                font=font("size_small"),
                 text_color=color("text_secondary"),
-                anchor="w",
-            ).pack(fill="x", padx=pad, pady=(2, 0))
+            ).grid(row=1, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 4))
 
-        details = []
+        # MAC & Vendor
+        mac = device.get("mac", "")
+        vendor = device.get("vendor", "")
         if mac:
-            details.append(mac)
-        if vendor:
-            details.append(vendor)
-        if os_info:
-            details.append(os_info)
-
-        if details:
+            mac_str = f"MAC: {mac}" + (f" ({vendor})" if vendor else "")
             ctk.CTkLabel(
                 card,
-                text=" · ".join(details),
+                text=mac_str,
+                font=font("size_small", mono=True),
+                text_color=color("text_muted"),
+            ).grid(row=2, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 4))
+
+        # Open Ports
+        ports = device.get("ports", {})
+        if ports:
+            ports_str = ", ".join([f"{p}/{svc}" for p, svc in list(ports.items())[:6]])
+            if len(ports) > 6:
+                ports_str += f" (+{len(ports)-6} more)"
+            ctk.CTkLabel(
+                card,
+                text=f"Ports: {ports_str}",
+                font=font("size_small"),
+                text_color=color("text_primary"),
+            ).grid(row=3, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 10))
+        else:
+            ctk.CTkLabel(
+                card,
+                text="Host active (no open ports detected)",
                 font=font("size_small"),
                 text_color=color("text_muted"),
-                anchor="w",
-                wraplength=180,
-                justify="left",
-            ).pack(fill="x", padx=pad, pady=(2, pad))
-
-        if ports:
-            port_str = ", ".join(list(ports.keys())[:5])
-            if len(ports) > 5:
-                port_str += f" +{len(ports) - 5} more"
-
-            ctk.CTkLabel(
-                card,
-                text=f"🖧 {port_str}",
-                font=font("size_small", mono=True),
-                text_color=color("accent"),
-                anchor="w",
-            ).pack(fill="x", padx=pad, pady=(0, pad))
+            ).grid(row=3, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 10))
 
         return card
-
-    def _show_status(self, message: str, level: str = "info"):
-        """Update status label with color."""
-        colors = {
-            "info": color("text_muted"),
-            "success": status_color("online"),
-            "error": status_color("offline"),
-        }
-        self._status_label.configure(text=message, text_color=colors.get(level, color("text_muted")))
-
-    def refresh(self):
-        """Refresh results (re-fetch device status from DB)."""
-        if self._scan_results:
-            self._display_results(self._scan_results, 0)

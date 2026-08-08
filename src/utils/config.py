@@ -3,17 +3,18 @@
 Handles loading, saving, updating, and validating application configuration.
 Configuration is stored in JSON format at data/config.json using pathlib.
 """
+from __future__ import annotations
+
+import ipaddress
 import json
+import platform
+import re
+import socket
+import subprocess
 from pathlib import Path
 from typing import Any
 
 from utils.logger import log_event
-
-import socket
-import subprocess
-import re
-from pathlib import Path
-import json
 
 
 
@@ -60,77 +61,47 @@ def detect_gateway() -> str:
     return "192.168.1.0/24"
 
 def detect_router_ip() -> str:
-    """Auto-detect the router/gateway IP and return as subnet."""
+    """Auto-detect the router/gateway IP and return as /24 subnet string."""
+    system_name = platform.system()
+
+    # Method 1: Windows ipconfig / route print parsing
+    if system_name == "Windows":
+        try:
+            output = subprocess.check_output("ipconfig", text=True, errors="ignore")
+            gateways = re.findall(r"Default Gateway[.\s]*:\s*(\d+\.\d+\.\d+\.\d+)", output)
+            for gw in gateways:
+                if gw and gw != "0.0.0.0":
+                    parts = gw.split(".")
+                    return f"{parts[0]}.{parts[1]}.{parts[2]}.0/24"
+        except Exception:
+            pass
+
+    # Method 2: Linux ip route show default
+    else:
+        try:
+            result = subprocess.run(['ip', 'route', 'show', 'default'], capture_output=True, text=True)
+            match = re.search(r'default via (\d+\.\d+\.\d+\.\d+)', result.stdout)
+            if match:
+                ip = match.group(1)
+                parts = ip.split(".")
+                return f"{parts[0]}.{parts[1]}.{parts[2]}.0/24"
+        except Exception:
+            pass
+
+    # Method 3: Cross-platform UDP socket connection to 8.8.8.8
     try:
-        # Method 1: Get default gateway via ip route
-        result = subprocess.run(['ip', 'route', 'show', 'default'], 
-                              capture_output=True, text=True)
-        # Look for: "default via 192.168.0.1 dev wlan0"
-        match = re.search(r'default via (\d+\.\d+\.\d+\.\d+)', result.stdout)
-        if match:
-            ip = match.group(1)
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 2: Get route to 8.8.8.8 (Google DNS)
-        result = subprocess.run(['ip', 'route', 'get', '8.8.8.8'], 
-                              capture_output=True, text=True)
-        # Look for: "8.8.8.8 via 192.168.0.1 dev wlan0"
-        match = re.search(r'via (\d+\.\d+\.\d+\.\d+)', result.stdout)
-        if match:
-            ip = match.group(1)
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 3: Use /proc/net/route (Linux)
-        with open('/proc/net/route', 'r') as f:
-            lines = f.readlines()
-            for line in lines[1:]:  # Skip header
-                parts = line.strip().split()
-                if parts[1] == '00000000':  # Default route
-                    # Convert hex to IP: 0101A8C0 -> 192.168.1.1
-                    hex_ip = parts[2]
-                    ip_parts = [str(int(hex_ip[i:i+2][::-1], 16)) for i in range(0, 8, 2)]
-                    ip = '.'.join(ip_parts)
-                    return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 4: Use socket to get local IP and assume /24
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
+        local_ip = s.getsockname()[0]
         s.close()
-        if ip and ip != '127.0.0.1':
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
+        if local_ip and local_ip != '127.0.0.1':
+            parts = local_ip.split(".")
+            return f"{parts[0]}.{parts[1]}.{parts[2]}.0/24"
+    except Exception:
         pass
-    
-    # Fallback: Check common subnets
-    common_subnets = [
-        '192.168.0.0/24',
-        '192.168.1.0/24',
-        '192.168.2.0/24',
-        '10.0.0.0/24',
-        '172.16.0.0/24'
-    ]
-    
-    # Try to find which subnet has active devices
-    for subnet in common_subnets:
-        try:
-            result = subprocess.run(['ping', '-c', '1', '-W', '1', subnet.replace('.0/24', '.1')], 
-                                  capture_output=True, timeout=2)
-            if result.returncode == 0:
-                return subnet
-        except:
-            pass
-    
-    return '192.168.0.0/24'
+
+    return '192.168.1.0/24'
+
 
 # Resolve project root relative to this file: src/utils/config.py -> project_root
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -142,7 +113,6 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "scan_type": "quick",
     "port_range": "1-1024",
     "theme": "dark",
-    # Developer 2 fields
     "selected_preset": "Quick",
     "last_used_preset": "Quick",
     "custom_scan_settings": {
@@ -183,6 +153,15 @@ def validate_config(config: dict[str, Any]) -> tuple[bool, str]:
     if not isinstance(subnet, str) or not subnet.strip():
         return False, "Subnet must be a non-empty string."
 
+    # Validate CIDR/IP syntax if subnet provided
+    try:
+        ipaddress.ip_network(subnet.strip(), strict=False)
+    except ValueError:
+        try:
+            ipaddress.ip_address(subnet.strip())
+        except ValueError:
+            return False, f"Subnet '{subnet}' is not a valid IP or CIDR network."
+
     # Validate scan_interval
     interval = config.get("scan_interval")
     if not isinstance(interval, (int, float)) or isinstance(interval, bool) or interval <= 0:
@@ -192,10 +171,10 @@ def validate_config(config: dict[str, Any]) -> tuple[bool, str]:
     scan_type = config.get("scan_type")
     if not isinstance(scan_type, str) or not scan_type.strip():
         return False, "scan_type must be a non-empty string."
+
     known_types = {"quick", "full", "custom", "ping", "version", "os", "intense"}
     if scan_type.lower() not in known_types and scan_type not in VALID_SCAN_TYPES:
         return False, f"scan_type must be one of standard types or valid presets, got '{scan_type}'."
-
 
     # Validate port_range
     port_range = config.get("port_range")

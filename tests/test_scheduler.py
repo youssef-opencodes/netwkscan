@@ -1,20 +1,27 @@
 """Unit tests for core/scheduler.py NetworkScheduler module."""
+import sys
 import time
+from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 import pytest
 
-import sys
-from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from core.alert_engine import AlertEngine
-from core.scanner import Scanner
+from core.scanner import ScanResult, Scanner
 from core.scheduler import NetworkScheduler
 
 
 def test_scheduler_lifecycle():
     mock_scanner = MagicMock(spec=Scanner)
-    mock_scanner.quick_scan.return_value = ([], 0.1)
+    mock_scanner.execute_scan.return_value = ScanResult(
+        success=True,
+        status_code="NO_HOSTS_FOUND",
+        devices=[],
+        duration=0.1,
+        command="nmap -sn 192.168.1.0/24",
+    )
 
     mock_alert_engine = MagicMock(spec=AlertEngine)
 
@@ -53,9 +60,12 @@ def test_scheduler_manual_run_now(mock_analyze_scan, mock_add_scan):
     }
 
     mock_scanner = MagicMock(spec=Scanner)
-    mock_scanner.quick_scan.return_value = (
-        [{"ip": "192.168.1.1", "hostname": "host1", "mac": "", "vendor": "", "os": ""}],
-        0.05,
+    mock_scanner.execute_scan.return_value = ScanResult(
+        success=True,
+        status_code="SUCCESS",
+        devices=[{"ip": "192.168.1.1", "hostname": "host1", "mac": "", "vendor": "", "os": ""}],
+        duration=0.05,
+        command="nmap -sn 192.168.1.0/24",
     )
 
     mock_alert_engine = MagicMock(spec=AlertEngine)
@@ -63,7 +73,7 @@ def test_scheduler_manual_run_now(mock_analyze_scan, mock_add_scan):
     scheduler = NetworkScheduler(scanner=mock_scanner, alert_engine=mock_alert_engine, interval=60.0)
     scheduler._execute_scan()
 
-    mock_scanner.quick_scan.assert_called_once()
+    mock_scanner.execute_scan.assert_called_once()
     mock_analyze_scan.assert_called_once()
     mock_add_scan.assert_called_once()
     mock_alert_engine.process_scan_result.assert_called_once()

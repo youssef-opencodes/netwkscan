@@ -4,11 +4,14 @@ Owns the CustomTkinter root window, the sidebar navigation and the content
 area. Pages are registered through ``register_page()`` so Developer 4 can plug
 custom_scan.py and logs_page.py in without editing this file.
 """
-import shutil
+from __future__ import annotations
+
+import os
 from typing import Any, Callable
 
 import customtkinter as ctk
 
+from core.scanner import find_nmap_binary, is_admin
 from core.scheduler import NetworkScheduler
 from gui.pages.main_page import MainPage
 from gui.resources import color, font, layout, load_theme
@@ -30,9 +33,11 @@ class MainWindow(ctk.CTk):
         self.minsize(layout("window_min_width", 1000), layout("window_min_height", 640))
 
         self._config = load_config()
-        self._nmap_available = shutil.which("nmap") is not None
-        self._scheduler: NetworkScheduler | None = None
+        self._nmap_path = find_nmap_binary()
+        self._nmap_available = self._nmap_path is not None
+        self._user_is_admin = is_admin()
 
+        self._scheduler: NetworkScheduler | None = None
         self._pages: dict[str, dict[str, Any]] = {}
         self._nav_buttons: dict[str, ctk.CTkButton] = {}
         self._current_page: str | None = None
@@ -47,8 +52,10 @@ class MainWindow(ctk.CTk):
         self._register_developer4_pages()
         self.show_page("dashboard")
 
-        if not self._nmap_available:
-            log_event("Nmap binary not found: scanning controls are disabled.", "warning")
+        if self._nmap_available:
+            log_event(f"Nmap binary detected at: {self._nmap_path} (Admin: {self._user_is_admin})", "info")
+        else:
+            log_event("Nmap binary not found on system. Please install Nmap or add it to PATH.", "warning")
 
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
@@ -103,13 +110,15 @@ class MainWindow(ctk.CTk):
         )
         self._scheduler_button.pack(fill="x")
 
+        subnet_str = self._config.get("subnet", "—")
+        nmap_status = "ok" if self._nmap_available else "not found"
+        priv_status = "Admin" if self._user_is_admin else "User"
+
         details = (
-            f"subnet  {self._config.get('subnet', '—')}\n"
-            f"type    {self._config.get('scan_type', '—')} · {self._config.get('port_range', '—')}\n"
-            f"every   {self._config.get('scan_interval', '—')} s"
+            f"subnet  {subnet_str}\n"
+            f"every   {self._config.get('scan_interval', '—')} s\n"
+            f"nmap    {nmap_status} ({priv_status})"
         )
-        if not self._nmap_available:
-            details += "\nnmap    not found"
 
         ctk.CTkLabel(
             footer,
@@ -127,7 +136,7 @@ class MainWindow(ctk.CTk):
         self._content.grid_rowconfigure(0, weight=1)
 
     # ------------------------------------------------------------------
-    # Page registry — Developer 4 integration point
+    # Page registry
     # ------------------------------------------------------------------
     def register_page(
         self,
@@ -135,14 +144,6 @@ class MainWindow(ctk.CTk):
         label: str,
         factory: Callable[[Any], ctk.CTkFrame],
     ) -> None:
-        """Register a navigable page.
-
-        Args:
-            key: unique identifier, e.g. "logs".
-            label: sidebar text.
-            factory: callable receiving the content frame and returning a frame.
-                It is called lazily, the first time the page is shown.
-        """
         if key in self._pages:
             log_event(f"Page '{key}' is already registered; ignoring duplicate.", "warning")
             return
@@ -165,11 +166,6 @@ class MainWindow(ctk.CTk):
         self._nav_buttons[key] = button
 
     def _register_developer4_pages(self) -> None:
-        """Auto-register Developer 4 pages if their modules already exist.
-
-        Guarded: while custom_scan.py and logs_page.py are still empty, the
-        imports fail silently and the GUI keeps working.
-        """
         candidates = [
             ("custom_scan", "Custom scan", "gui.pages.custom_scan", ("CustomScanPage", "CustomScan")),
             ("logs", "Logs", "gui.pages.logs_page", ("LogsPage", "LogsFrame")),
@@ -183,11 +179,10 @@ class MainWindow(ctk.CTk):
                 page_class = getattr(module, class_name, None)
                 if page_class is not None:
                     self.register_page(key, label, lambda master, c=page_class: c(master))
-                    log_event(f"Developer 4 page '{key}' registered automatically.", "info")
+                    log_event(f"Page '{key}' registered successfully.", "info")
                     break
 
     def show_page(self, key: str) -> None:
-        """Display a registered page, instantiating it on first use."""
         page = self._pages.get(key)
         if page is None:
             log_event(f"Requested unknown page '{key}'.", "error")
@@ -225,7 +220,7 @@ class MainWindow(ctk.CTk):
         return self._main_page
 
     # ------------------------------------------------------------------
-    # Scheduler control (Developer 2 backend)
+    # Scheduler control
     # ------------------------------------------------------------------
     def _get_scheduler(self) -> NetworkScheduler | None:
         if self._scheduler is None:
@@ -237,7 +232,6 @@ class MainWindow(ctk.CTk):
         return self._scheduler
 
     def run_scan_now(self) -> None:
-        """Trigger one immediate scan in Developer 2's background thread."""
         scheduler = self._get_scheduler()
         if scheduler is None:
             return
@@ -246,7 +240,6 @@ class MainWindow(ctk.CTk):
         self._update_scheduler_label()
 
     def toggle_scheduler(self) -> None:
-        """Start or stop periodic background scanning."""
         scheduler = self._get_scheduler()
         if scheduler is None:
             return

@@ -2,6 +2,7 @@
 between a fresh scan result and what's already stored in the database.
 """
 from datetime import datetime
+from typing import Any
 
 from core.database import (
     get_all_devices,
@@ -9,20 +10,23 @@ from core.database import (
     add_device,
     update_device_status,
 )
+from utils.logger import log_event
 
 
-def analyze_scan(scan_results: list[dict]) -> dict:
+def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) -> dict[str, Any]:
     """Compare a scan's results against the database and update device states.
 
     Args:
         scan_results: list of dicts, each with at least an "ip" key, and
             optionally hostname, mac, vendor, os.
+        scan_failed: If True, indicates scan execution failed. Skip marking
+            devices as offline to prevent false disconnection alerts.
 
     Returns:
         dict with keys "new", "returned", "disconnected" -> lists of IPs,
         and "seen_ips" -> set of IPs present in this scan.
     """
-    seen_ips = {entry["ip"] for entry in scan_results}
+    seen_ips = {entry["ip"] for entry in (scan_results or []) if isinstance(entry, dict) and "ip" in entry}
     known_devices = get_all_devices()
     known_ips = {device.ip for device in known_devices}
 
@@ -30,8 +34,23 @@ def analyze_scan(scan_results: list[dict]) -> dict:
     returned_ips: list[str] = []
     disconnected_ips: list[str] = []
 
+    # If the scan failed, do NOT mark existing devices offline!
+    if scan_failed:
+        log_event("Scan failed flag is True; skipping disconnection processing.", "warning")
+        return {
+            "new": [],
+            "returned": [],
+            "disconnected": [],
+            "seen_ips": set(),
+            "scan_results": [],
+            "timestamp": datetime.utcnow().isoformat(),
+            "scan_failed": True,
+        }
+
     # Devices found in this scan: either brand new, or returning/still online.
-    for entry in scan_results:
+    for entry in scan_results or []:
+        if not isinstance(entry, dict) or "ip" not in entry:
+            continue
         ip = entry["ip"]
         existing = get_device_by_ip(ip)
 
@@ -80,5 +99,5 @@ def analyze_scan(scan_results: list[dict]) -> dict:
         "seen_ips": seen_ips,
         "scan_results": scan_results,
         "timestamp": datetime.utcnow().isoformat(),
+        "scan_failed": False,
     }
-

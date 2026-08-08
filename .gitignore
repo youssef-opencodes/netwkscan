@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .env
 data/exports/
+data/nmd.db
+src/data/logs/*.log

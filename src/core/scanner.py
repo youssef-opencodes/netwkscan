@@ -1,61 +1,130 @@
-"""Nmap results parsing and scanning engine (Dev 1 & Dev 2).
+"""Nmap scanning engine and XML parser for NMD (Network Monitoring Dashboard).
 
-Provides custom scan configuration, dynamic Nmap command generation,
-device classification, open port parsing, and exception handling.
+Provides dynamic Nmap command generation, cross-platform executable resolution,
+privileged/unprivileged scan handling, subprocess execution with XML parsing,
+timeout control, and detailed error classification.
 """
 from __future__ import annotations
 
-from typing import Any, Tuple
+import ctypes
+import ipaddress
+import os
+import platform
+import re
+import shutil
+import subprocess
 import time
-
-import nmap
+import xml.etree.ElementTree as ET
+from typing import Any
 
 from utils.logger import log_event
 
 
-def parse_nmap_results(nm: nmap.PortScanner, host: str) -> dict[str, str]:
-    """Extract open ports/services for one host from a python-nmap PortScanner result.
-
-    Args:
-        nm: an nmap.PortScanner instance after nm.scan(...) has run.
-        host: the IP address to extract results for.
+def find_nmap_binary() -> str | None:
+    """Detect nmap executable across Windows and Linux system paths.
 
     Returns:
-        dict mapping port (str) -> service name, e.g. {"22": "ssh", "80": "http"}.
-        Only ports in the "open" state are included.
+        Absolute path string to nmap executable, or None if not installed.
     """
-    ports: dict[str, str] = {}
-    if not hasattr(nm, "all_hosts") or host not in nm.all_hosts():
-        return ports
+    # 1. Standard PATH resolution using shutil.which
+    found = shutil.which("nmap") or shutil.which("nmap.exe")
+    if found and os.path.isfile(found):
+        return found
 
+    system_name = platform.system()
+
+    # 2. Windows specific standard installation paths
+    if system_name == "Windows":
+        candidate_paths = [
+            os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "Nmap", "nmap.exe"),
+            os.path.join(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"), "Nmap", "nmap.exe"),
+            r"C:\Program Files\Nmap\nmap.exe",
+            r"C:\Program Files (x86)\Nmap\nmap.exe",
+        ]
+        for path in candidate_paths:
+            if os.path.isfile(path):
+                return path
+
+    # 3. Linux/POSIX specific standard binary paths
+    else:
+        candidate_paths = [
+            "/usr/bin/nmap",
+            "/usr/local/bin/nmap",
+            "/bin/nmap",
+        ]
+        for path in candidate_paths:
+            if os.path.isfile(path):
+                return path
+
+    return None
+
+
+def is_admin() -> bool:
+    """Check if the current process has Administrator (Windows) or root (Linux) privileges."""
     try:
-        host_obj = nm[host]
-        if hasattr(host_obj, "all_protocols"):
-            protocols = host_obj.all_protocols()
-        elif isinstance(host_obj, dict):
-            protocols = [p for p in host_obj.keys() if p in ("tcp", "udp", "sctp", "ip")]
+        if platform.system() == "Windows":
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
         else:
-            protocols = []
-
-        for proto in protocols:
-            proto_ports = host_obj.get(proto, {}) if isinstance(host_obj, dict) else host_obj[proto]
-            if isinstance(proto_ports, dict):
-                for port in sorted(proto_ports.keys()):
-                    port_info = proto_ports[port]
-                    if isinstance(port_info, dict) and port_info.get("state") == "open":
-                        ports[str(port)] = port_info.get("name") or "unknown"
+            return os.geteuid() == 0
     except Exception:
+        return False
+
+
+def validate_target(target: str) -> tuple[bool, str]:
+    """Validate target IP, CIDR subnet, or hostname.
+
+    Returns:
+        (is_valid: bool, error_message: str)
+    """
+    if not target or not target.strip():
+        return False, "Target address is empty."
+
+    target_str = target.strip()
+
+    # 1. Try IP network / CIDR (e.g. 10.222.83.0/24)
+    try:
+        ipaddress.ip_network(target_str, strict=False)
+        return True, ""
+    except ValueError:
         pass
 
-    return ports
+    # 2. Try single IP (e.g. 192.168.1.1)
+    try:
+        ipaddress.ip_address(target_str)
+        return True, ""
+    except ValueError:
+        pass
 
+    # 3. Try domain name / hostname (e.g. localhost or scanme.nmap.org)
+    hostname_regex = re.compile(
+        r"^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}$|^localhost$"
+    )
+    if hostname_regex.match(target_str):
+        return True, ""
+
+    return False, f"Invalid target format: '{target_str}'. Expected CIDR (e.g. 10.222.83.0/24) or IP."
+
+
+def parse_nmap_results(nm: Any, host: str) -> dict[str, str]:
+    """Legacy helper function kept for backwards compatibility."""
+    if hasattr(nm, "all_hosts") and callable(nm.all_hosts):
+        ports: dict[str, str] = {}
+        try:
+            if host in nm.all_hosts():
+                host_obj = nm[host]
+                for proto in ("tcp", "udp"):
+                    if proto in host_obj:
+                        for p, info in host_obj[proto].items():
+                            if info.get("state") == "open":
+                                ports[str(p)] = info.get("name", "unknown")
+        except Exception:
+            pass
+        return ports
+    return {}
 
 
 def guess_device_type(ports: dict[str, str], os_name: str | None = None) -> str:
-    """Rough heuristic to classify a device from its open ports / OS fingerprint.
-
-    Returns one of: "Router", "Phone", "PC", "Server", "Unknown".
-    """
+    """Classify device type based on open ports and OS fingerprint."""
     os_name = (os_name or "").lower()
     port_set = set(ports.keys())
 
@@ -70,17 +139,247 @@ def guess_device_type(ports: dict[str, str], os_name: str | None = None) -> str:
     return "Unknown"
 
 
-class Scanner:
-    """Nmap scanning engine supporting customizable scans, timing, verbosity, and ports."""
+def parse_nmap_xml(xml_content: str) -> list[dict[str, Any]]:
+    """Parse Nmap XML output (-oX -) into structured device objects.
 
-    def __init__(self) -> None:
+    Args:
+        xml_content: String containing complete Nmap XML output.
+
+    Returns:
+        List of device dicts with ip, hostname, mac, vendor, os, device_type, ports.
+    """
+    devices: list[dict[str, Any]] = []
+    if not xml_content or not xml_content.strip():
+        return devices
+
+    try:
+        root = ET.fromstring(xml_content)
+    except ET.ParseError as err:
+        log_event(f"XML parse error: {err}", "error")
+        return devices
+
+    for host_node in root.findall("host"):
+        # Check host status (only process hosts that are 'up')
+        status_node = host_node.find("status")
+        if status_node is not None and status_node.get("state") != "up":
+            continue
+
+        ip = ""
+        mac = ""
+        vendor = ""
+
+        # Addresses (IPv4, IPv6, MAC)
+        for addr_node in host_node.findall("address"):
+            addr_type = addr_node.get("addrtype", "")
+            addr_val = addr_node.get("addr", "")
+            if addr_type in ("ipv4", "ipv6") and not ip:
+                ip = addr_val
+            elif addr_type == "mac":
+                mac = addr_val
+                vendor = addr_node.get("vendor", "")
+
+        if not ip:
+            continue
+
+        # Hostname
+        hostname = ""
+        hostnames_node = host_node.find("hostnames")
+        if hostnames_node is not None:
+            hn_node = hostnames_node.find("hostname")
+            if hn_node is not None:
+                hostname = hn_node.get("name", "")
+
+        # OS Detection
+        os_info = ""
+        os_node = host_node.find("os")
+        if os_node is not None:
+            osmatch_node = os_node.find("osmatch")
+            if osmatch_node is not None:
+                os_info = osmatch_node.get("name", "")
+
+        # Open Ports & Service Parsing
+        open_ports: dict[str, str] = {}
+        port_details: list[dict[str, Any]] = []
+
+        ports_node = host_node.find("ports")
+        if ports_node is not None:
+            for port_node in ports_node.findall("port"):
+                state_node = port_node.find("state")
+                if state_node is not None and state_node.get("state") == "open":
+                    port_id = port_node.get("portid", "")
+                    protocol = port_node.get("protocol", "tcp")
+                    
+                    service_node = port_node.find("service")
+                    service_name = "unknown"
+                    product = ""
+                    version = ""
+
+                    if service_node is not None:
+                        service_name = service_node.get("name", "unknown")
+                        product = service_node.get("product", "")
+                        version = service_node.get("version", "")
+
+                    version_full = f"{product} {version}".strip()
+                    open_ports[port_id] = service_name
+
+                    port_details.append(
+                        {
+                            "port": int(port_id) if port_id.isdigit() else port_id,
+                            "protocol": protocol,
+                            "state": "open",
+                            "service": service_name,
+                            "version": version_full,
+                        }
+                    )
+
+        device_type = guess_device_type(open_ports, os_info)
+
+        devices.append(
+            {
+                "ip": ip,
+                "hostname": hostname,
+                "mac": mac,
+                "vendor": vendor,
+                "os": os_info,
+                "device_type": device_type,
+                "ports": open_ports,
+                "port_details": port_details,
+                "status": "online",
+            }
+        )
+
+    return devices
+
+
+class ScanResult:
+    """Structured container for scan execution results and status."""
+
+    def __init__(
+        self,
+        success: bool,
+        status_code: str,
+        devices: list[dict[str, Any]],
+        duration: float,
+        command: str,
+        error_message: str = "",
+    ) -> None:
+        self.success = success
+        self.status_code = status_code  # SUCCESS, NO_HOSTS_FOUND, NMAP_NOT_FOUND, PERMISSION_ERROR, INVALID_TARGET, TIMEOUT, EXECUTION_ERROR
+        self.devices = devices
+        self.duration = duration
+        self.command = command
+        self.error_message = error_message
+
+    def to_tuple(self) -> tuple[list[dict[str, Any]], float]:
+        """Backwards compatibility tuple representation."""
+        return self.devices, self.duration
+
+
+class Scanner:
+    """Cross-platform Nmap scanning engine."""
+
+    def __init__(self, nmap_path: str | None = None) -> None:
+        self.nmap_path = nmap_path or find_nmap_binary()
         self.last_duration: float = 0.0
         self._last_command: str = ""
+        self._active_process: subprocess.Popen | None = None
 
     @property
     def last_command(self) -> str:
-        """Return the exact string of the last constructed Nmap command."""
+        """Return the string representation of the last built Nmap command."""
         return self._last_command
+
+    def is_nmap_available(self) -> bool:
+        """Check if a valid Nmap binary is available."""
+        self.nmap_path = find_nmap_binary()
+        return self.nmap_path is not None
+
+    def cancel_scan(self) -> None:
+        """Cancel an actively executing Nmap subprocess."""
+        if self._active_process and self._active_process.poll() is None:
+            try:
+                self._active_process.terminate()
+                log_event("Active scan process termination requested.", "info")
+            except Exception as err:
+                log_event(f"Failed to terminate scan process: {err}", "error")
+
+    def build_nmap_command_args(
+        self,
+        target: str,
+        ports: str | None = None,
+        arguments: str | None = None,
+        timing: str | int | None = None,
+        host_timeout: str | None = None,
+        verbosity: str | int | None = None,
+        min_hostgroup: int | str | None = None,
+        max_hostgroup: int | str | None = None,
+    ) -> list[str]:
+        """Construct the argument list for Nmap subprocess execution."""
+        nmap_bin = self.nmap_path or "nmap"
+        cmd: list[str] = [nmap_bin]
+
+        # Always add XML output flag
+        cmd.extend(["-oX", "-"])
+
+        # Check privileges for SYN scan fallback
+        user_is_admin = is_admin()
+
+        # Parse and process arguments
+        args_str = (arguments or "").strip()
+
+        # Privileged flags handling: SYN stealth (-sS) requires Admin/root.
+        # Fallback to TCP Connect scan (-sT) if non-admin.
+        if "-sS" in args_str and not user_is_admin:
+            log_event("SYN Stealth scan (-sS) requires Administrator/root privileges. Downgrading to TCP Connect scan (-sT).", "warning")
+            args_str = args_str.replace("-sS", "-sT")
+
+        if args_str:
+            # Split custom arguments safely while retaining flags
+            for arg_part in args_str.split():
+                if arg_part not in cmd:
+                    cmd.append(arg_part)
+
+        # Timing template (-T0 to -T5)
+        if timing is not None:
+            t_str = str(timing).strip()
+            if not t_str.startswith("-T"):
+                if t_str.isdigit():
+                    t_str = f"-T{t_str}"
+                elif t_str.startswith("T"):
+                    t_str = f"-{t_str}"
+            if t_str in {"-T0", "-T1", "-T2", "-T3", "-T4", "-T5"}:
+                if not any(t in cmd for t in ["-T0", "-T1", "-T2", "-T3", "-T4", "-T5"]):
+                    cmd.append(t_str)
+
+        # Verbosity
+        if verbosity is not None:
+            v_str = str(verbosity).strip()
+            if v_str in ("1", "-v") and "-v" not in cmd:
+                cmd.append("-v")
+            elif v_str in ("2", "-vv") and "-vv" not in cmd:
+                cmd.append("-vv")
+
+        # Host timeout
+        if host_timeout and str(host_timeout).strip():
+            ht = str(host_timeout).strip()
+            if "--host-timeout" not in cmd:
+                cmd.extend(["--host-timeout", ht])
+
+        # Parallelism
+        if min_hostgroup is not None and "--min-hostgroup" not in cmd:
+            cmd.extend(["--min-hostgroup", str(min_hostgroup)])
+        if max_hostgroup is not None and "--max-hostgroup" not in cmd:
+            cmd.extend(["--max-hostgroup", str(max_hostgroup)])
+
+        # Ports
+        if ports and str(ports).strip():
+            p_str = str(ports).strip()
+            if "-p" not in cmd:
+                cmd.extend(["-p", p_str])
+
+        # Target IP / Subnet
+        cmd.append(target.strip())
+        return cmd
 
     def build_nmap_command(
         self,
@@ -93,113 +392,187 @@ class Scanner:
         min_hostgroup: int | str | None = None,
         max_hostgroup: int | str | None = None,
     ) -> str:
-        """Dynamically build the final Nmap CLI command string according to parameters."""
-        cmd_parts = ["nmap"]
+        """Return human-readable command string representation for preview and logs."""
+        args = self.build_nmap_command_args(
+            target=target,
+            ports=ports,
+            arguments=arguments,
+            timing=timing,
+            host_timeout=host_timeout,
+            verbosity=verbosity,
+            min_hostgroup=min_hostgroup,
+            max_hostgroup=max_hostgroup,
+        )
+        # Omit '-oX -' from the display command for cleaner preview
+        display_args = [a for a in args if a not in ("-oX", "-")]
+        return " ".join(display_args)
 
-        # 1. Base custom arguments or flags
-        if arguments and arguments.strip():
-            cmd_parts.append(arguments.strip())
-
-        # 2. Timing template (-T0..-T5)
-        if timing is not None:
-            t_str = str(timing).strip()
-            if not t_str.startswith("-T"):
-                if t_str.isdigit():
-                    t_str = f"-T{t_str}"
-                elif t_str.startswith("T"):
-                    t_str = f"-{t_str}"
-            if t_str in {"-T0", "-T1", "-T2", "-T3", "-T4", "-T5"}:
-                if not any(f in cmd_parts for f in ["-T0", "-T1", "-T2", "-T3", "-T4", "-T5"]):
-                    cmd_parts.append(t_str)
-
-        # 3. Verbosity (-v, -vv)
-        if verbosity is not None:
-            v_str = str(verbosity).strip()
-            if v_str == "1" or v_str == "-v":
-                if "-v" not in cmd_parts:
-                    cmd_parts.append("-v")
-            elif v_str == "2" or v_str == "-vv":
-                if "-vv" not in cmd_parts:
-                    cmd_parts.append("-vv")
-
-        # 4. Host timeout (--host-timeout)
-        if host_timeout and str(host_timeout).strip():
-            ht = str(host_timeout).strip()
-            cmd_parts.extend(["--host-timeout", ht])
-
-        # 5. Parallelism (--min-hostgroup, --max-hostgroup)
-        if min_hostgroup is not None:
-            cmd_parts.extend(["--min-hostgroup", str(min_hostgroup)])
-        if max_hostgroup is not None:
-            cmd_parts.extend(["--max-hostgroup", str(max_hostgroup)])
-
-        # 6. Ports specification (-p)
-        if ports and str(ports).strip():
-            p_str = str(ports).strip()
-            if not p_str.startswith("-p"):
-                cmd_parts.extend(["-p", p_str])
-            else:
-                cmd_parts.append(p_str)
-
-        # 7. Target IP/CIDR
-        cmd_parts.append(target.strip())
-        return " ".join(cmd_parts)
-
-    def parse_nmap_results(self, nm: nmap.PortScanner) -> list[dict[str, Any]]:
-        """Parse all hosts from a python-nmap PortScanner object into structured device dicts.
-
-        Args:
-            nm: Active nmap.PortScanner object after scan execution.
+    def execute_scan(
+        self,
+        target: str,
+        ports: str | None = None,
+        arguments: str | None = None,
+        timing: str | int | None = None,
+        host_timeout: str | None = None,
+        verbosity: str | int | None = None,
+        min_hostgroup: int | str | None = None,
+        max_hostgroup: int | str | None = None,
+        timeout: float = 300.0,
+    ) -> ScanResult:
+        """Execute Nmap scan synchronously using subprocess and parse XML output.
 
         Returns:
-            List of device dictionaries containing ip, hostname, mac, vendor, os, ports, device_type.
+            ScanResult object with success flag, status_code, hosts list, and detailed error messages.
         """
-        results: list[dict[str, Any]] = []
-        if not hasattr(nm, "all_hosts"):
-            return results
+        start_time = time.time()
 
-        for host in nm.all_hosts():
-            try:
-                host_data = nm[host]
-                addresses = host_data.get("addresses", {})
-                ip = addresses.get("ipv4", host)
-                mac = addresses.get("mac", "")
+        # 1. Target Validation
+        is_valid_tgt, tgt_err = validate_target(target)
+        if not is_valid_tgt:
+            log_event(f"Target validation failed: {tgt_err}", "error")
+            return ScanResult(
+                success=False,
+                status_code="INVALID_TARGET",
+                devices=[],
+                duration=0.0,
+                command=f"nmap {target}",
+                error_message=tgt_err,
+            )
 
-                # Hostname extraction
-                hostnames = host_data.get("hostnames", [])
-                hostname = ""
-                if hostnames and isinstance(hostnames, list):
-                    hostname = hostnames[0].get("name", "") if isinstance(hostnames[0], dict) else ""
+        # 2. Binary Validation
+        nmap_bin = find_nmap_binary()
+        if not nmap_bin:
+            err_msg = "Nmap executable not found. Please install Nmap or add it to PATH."
+            log_event(err_msg, "error")
+            return ScanResult(
+                success=False,
+                status_code="NMAP_NOT_FOUND",
+                devices=[],
+                duration=0.0,
+                command=f"nmap {target}",
+                error_message=err_msg,
+            )
+        self.nmap_path = nmap_bin
 
-                # Vendor extraction
-                vendor_map = host_data.get("vendor", {})
-                vendor = vendor_map.get(mac, "") if mac and isinstance(vendor_map, dict) else ""
+        # Build execution command
+        cmd_args = self.build_nmap_command_args(
+            target=target,
+            ports=ports,
+            arguments=arguments,
+            timing=timing,
+            host_timeout=host_timeout,
+            verbosity=verbosity,
+            min_hostgroup=min_hostgroup,
+            max_hostgroup=max_hostgroup,
+        )
+        full_cmd_str = self.build_nmap_command(
+            target=target,
+            ports=ports,
+            arguments=arguments,
+            timing=timing,
+            host_timeout=host_timeout,
+            verbosity=verbosity,
+            min_hostgroup=min_hostgroup,
+            max_hostgroup=max_hostgroup,
+        )
+        self._last_command = full_cmd_str
 
-                # OS match extraction
-                osmatch = host_data.get("osmatch", [])
-                os_info = ""
-                if osmatch and isinstance(osmatch, list):
-                    os_info = osmatch[0].get("name", "") if isinstance(osmatch[0], dict) else ""
+        log_event(f"[INFO] Nmap path: {nmap_bin}", "info")
+        log_event(f"[INFO] Target: {target}", "info")
+        log_event(f"[INFO] Executing command: {full_cmd_str}", "info")
 
-                # Extract ports & classify device type using Dev 1 functions
-                discovered_ports = parse_nmap_results(nm, host)
-                classified_type = guess_device_type(discovered_ports, os_info)
+        stdout_data = ""
+        stderr_data = ""
+        returncode = -1
 
-                device_dict = {
-                    "ip": ip,
-                    "hostname": hostname,
-                    "mac": mac,
-                    "vendor": vendor,
-                    "os": os_info,
-                    "device_type": classified_type,
-                    "ports": discovered_ports,
-                }
-                results.append(device_dict)
+        try:
+            # Execute subprocess safely
+            self._active_process = subprocess.Popen(
+                cmd_args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
 
-            except Exception as exc:
-                log_event(f"Error parsing scan result for host {host}: {exc}", "error")
+            stdout_data, stderr_data = self._active_process.communicate(timeout=timeout)
+            returncode = self._active_process.returncode
 
-        return results
+        except subprocess.TimeoutExpired:
+            self.cancel_scan()
+            duration = round(time.time() - start_time, 2)
+            err_msg = f"Nmap scan timed out after {timeout} seconds."
+            log_event(f"[ERROR] {err_msg}", "error")
+            return ScanResult(
+                success=False,
+                status_code="TIMEOUT",
+                devices=[],
+                duration=duration,
+                command=full_cmd_str,
+                error_message=err_msg,
+            )
+
+        except Exception as exc:
+            duration = round(time.time() - start_time, 2)
+            err_msg = f"Failed to launch Nmap process: {exc}"
+            log_event(f"[ERROR] {err_msg}", "error")
+            return ScanResult(
+                success=False,
+                status_code="EXECUTION_ERROR",
+                devices=[],
+                duration=duration,
+                command=full_cmd_str,
+                error_message=err_msg,
+            )
+
+        finally:
+            self._active_process = None
+
+        duration = round(time.time() - start_time, 2)
+        self.last_duration = duration
+
+        # Check Nmap execution exit status and stderr
+        stderr_clean = (stderr_data or "").strip()
+
+        # Permission error detection
+        if returncode != 0 and ("requires root privileges" in stderr_clean.lower() or "dnet: failed" in stderr_clean.lower() or "administrator" in stderr_clean.lower()):
+            err_msg = "This scan option requires Administrator (Windows) or root (Linux) privileges."
+            log_event(f"[ERROR] Permission error: {stderr_clean}", "error")
+            return ScanResult(
+                success=False,
+                status_code="PERMISSION_ERROR",
+                devices=[],
+                duration=duration,
+                command=full_cmd_str,
+                error_message=err_msg,
+            )
+
+        if returncode != 0:
+            err_msg = stderr_clean or f"Nmap exited with error code {returncode}."
+            log_event(f"[ERROR] Nmap execution failed (return code {returncode}): {err_msg}", "error")
+            return ScanResult(
+                success=False,
+                status_code="EXECUTION_ERROR",
+                devices=[],
+                duration=duration,
+                command=full_cmd_str,
+                error_message=err_msg,
+            )
+
+        # Parse XML results
+        devices = parse_nmap_xml(stdout_data)
+        log_event(f"[INFO] Scan completed in {duration}s. Devices found: {len(devices)}", "info")
+
+        status_code = "SUCCESS" if devices else "NO_HOSTS_FOUND"
+        return ScanResult(
+            success=True,
+            status_code=status_code,
+            devices=devices,
+            duration=duration,
+            command=full_cmd_str,
+            error_message="" if devices else "0 hosts found.",
+        )
 
     def custom_scan(
         self,
@@ -213,30 +586,8 @@ class Scanner:
         max_hostgroup: int | str | None = None,
         **kwargs: Any,
     ) -> tuple[list[dict[str, Any]], float]:
-        """Perform a custom Nmap scan dynamically configured by parameters.
-
-        Args:
-            target: Subnet CIDR or IP address.
-            ports: Custom port range (e.g. "1-1024", "22,80,443").
-            arguments: Custom Nmap options string (e.g. "-sV -O").
-            timing: Timing template (-T0..-T5).
-            host_timeout: Max timeout per host (e.g. "5m").
-            verbosity: Verbosity level (-v, -vv).
-            min_hostgroup: Minimum parallel host group size.
-            max_hostgroup: Maximum parallel host group size.
-
-        Returns:
-            Tuple of (list of device dicts, duration in seconds).
-        """
-        start_time = time.time()
-
-        if not target or not target.strip():
-            log_event("Custom scan target is empty.", "warning")
-            self.last_duration = 0.0
-            return [], 0.0
-
-        # Construct full command string for audit / logging
-        full_command = self.build_nmap_command(
+        """Perform scan and return tuple of (devices, duration) for backwards compatibility."""
+        res = self.execute_scan(
             target=target,
             ports=ports,
             arguments=arguments,
@@ -246,67 +597,15 @@ class Scanner:
             min_hostgroup=min_hostgroup,
             max_hostgroup=max_hostgroup,
         )
-        self._last_command = full_command
-        log_event(f"Executing dynamic scan: {full_command}", "info")
-
-        # Build python-nmap arguments string (excluding target & ports which are passed separately)
-        arg_list = []
-        if arguments and arguments.strip():
-            arg_list.append(arguments.strip())
-        else:
-            # Default to host discovery plus a lightweight port scan so local-network devices
-            # that are up but not exposing common ports still appear in results.
-            arg_list.append("-sn")
-        if timing is not None:
-            t_str = str(timing).strip()
-            if not t_str.startswith("-T") and t_str.isdigit():
-                t_str = f"-T{t_str}"
-            if t_str in {"-T0", "-T1", "-T2", "-T3", "-T4", "-T5"}:
-                arg_list.append(t_str)
-        if verbosity is not None:
-            v_str = str(verbosity).strip()
-            if v_str in ("1", "-v"):
-                arg_list.append("-v")
-            elif v_str in ("2", "-vv"):
-                arg_list.append("-vv")
-        if host_timeout and str(host_timeout).strip():
-            arg_list.append(f"--host-timeout {host_timeout.strip()}")
-        if min_hostgroup is not None:
-            arg_list.append(f"--min-hostgroup {min_hostgroup}")
-        if max_hostgroup is not None:
-            arg_list.append(f"--max-hostgroup {max_hostgroup}")
-
-        nmap_args = " ".join(arg_list).strip() if arg_list else None
-
-        results: list[dict[str, Any]] = []
-
-        try:
-            nm = nmap.PortScanner()
-            nm.scan(hosts=target.strip(), ports=ports if ports else None, arguments=nmap_args or "")
-            results = self.parse_nmap_results(nm)
-
-            if not results and arguments and "-sn" in arguments:
-                # Fallback to a standard TCP scan for the same target if host discovery returned none.
-                nm = nmap.PortScanner()
-                nm.scan(hosts=target.strip(), ports=ports or "1-1024", arguments="-sS -T4")
-                results = self.parse_nmap_results(nm)
-        except nmap.PortScannerError as nmap_err:
-            log_event(f"Nmap execution failed: {nmap_err}", "error")
-        except Exception as exc:
-            log_event(f"Unexpected error during scan: {exc}", "error")
-
-        duration = round(time.time() - start_time, 2)
-        self.last_duration = duration
-        log_event(f"Scan finished in {duration}s. Devices found: {len(results)}", "info")
-        return results, duration
+        return res.devices, res.duration
 
     def quick_scan(self, target: str) -> tuple[list[dict[str, Any]], float]:
-        """Perform a fast host discovery ping scan (-sn)."""
+        """Perform a host discovery ping scan (-sn)."""
         return self.custom_scan(target=target, arguments="-sn")
 
-    def full_scan(self, target: str, ports: str | None = "1-65535") -> tuple[list[dict[str, Any]], float]:
-        """Perform an in-depth scan with OS and service detection (-sV -O -A)."""
-        return self.custom_scan(target=target, ports=ports, arguments="-sV -O -A")
+    def full_scan(self, target: str, ports: str | None = "1-1024") -> tuple[list[dict[str, Any]], float]:
+        """Perform a standard full scan with version & OS detection."""
+        return self.custom_scan(target=target, ports=ports, arguments="-sV -O")
 
     def run_scan(
         self, target: str, preset_name: str | None = None, **kwargs: Any
@@ -325,6 +624,5 @@ class Scanner:
             except Exception as exc:
                 log_event(f"Failed to load preset '{preset_name}': {exc}", "warning")
 
-        results, duration = self.custom_scan(target=target, ports=ports, arguments=arguments, **kwargs)
-        return results, duration, self.last_command
-
+        res = self.execute_scan(target=target, ports=ports, arguments=arguments, **kwargs)
+        return res.devices, res.duration, res.command
