@@ -93,3 +93,61 @@
 2026-08-08 15:55:04 | INFO     | nmd | [SID:20260808_155155] [CALL:18] logger.py:log_event():145 | Executing dynamic scan: nmap -sV -T2 -p 1-1024 192.168.0.105
 2026-08-08 16:00:51 | ERROR    | nmd | [SID:20260808_155155] [CALL:19] logger.py:log_event():145 | Nmap execution failed: b'<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE nmaprun>\n<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>\n<!-- Nmap 7.92 scan initiated Sat Aug  8 15:55:04 2026 as: nmap -oX - -p 1-1024 -sV -T2 192.168.0.105 -->\n<nmaprun scanner="nmap" args="nmap -oX - -p 1-1024 -sV -T2 192.168.0.105" start="1786200904" startstr="Sat Aug  8 15:55:04 2026" version="7.92" xmloutputversion="1.05">\n<scaninfo type="syn" protocol="tcp" numservices="1024" services="1-1024"/>\n<verbose level="0"/>\n<debugging level="0"/>\n<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>\n<address addr="192.168.0.105" addrtype="ipv4"/>\n<address addr="40:E9:9B:0D:A0:9F" addrtype="mac"/>\n<hostnames>\n</hostnames>\n</hosthint>\n'
 2026-08-08 16:00:51 | INFO     | nmd | [SID:20260808_155155] [CALL:20] logger.py:log_event():145 | Scan finished in 346.87s. Devices found: 0
+2026-08-08 16:30:29 | INFO     | nmd | ============================================================
+2026-08-08 16:30:29 | INFO     | nmd | LOGGER INITIALIZED - Session: 2026-08-08 16:30:29
+2026-08-08 16:30:29 | INFO     | nmd | Log file: /home/pc/stageOBSV/v2/netwkscan/src/data/logs/audit.log
+2026-08-08 16:30:29 | INFO     | nmd | Python version: 3.14.6 (main, Jun 11 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]
+2026-08-08 16:30:29 | INFO     | nmd | ============================================================
+2026-08-08 16:30:29 | INFO     | nmd | Starting NMD application...
+2026-08-08 16:30:29 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-08 16:30:29 | INFO     | nmd | [SID:20260808_163029] [CALL:1] logger.py:log_event():145 | Developer 4 page 'custom_scan' registered automatically.
+2026-08-08 16:30:29 | INFO     | nmd | [SID:20260808_163029] [CALL:2] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
+2026-08-08 16:30:30 | INFO     | nmd | Launching GUI main window.
+2026-08-08 16:30:34 | INFO     | nmd | [SID:20260808_163029] [CALL:3] logger.py:log_event():145 | Manual scan requested via scheduler run_now().
+2026-08-08 16:30:34 | INFO     | nmd | [SID:20260808_163029] [CALL:4] logger.py:log_event():145 | Manual scan triggered from dashboard.
+2026-08-08 16:30:34 | INFO     | nmd | [SID:20260808_163029] [CALL:5] logger.py:log_event():145 | Scheduler scan started with target: 192.168.0.0/24, type: quick
+2026-08-08 16:30:34 | INFO     | nmd | [SID:20260808_163029] [CALL:6] logger.py:log_event():145 | Scheduler starting 'quick' scan on target '192.168.0.0/24'.
+2026-08-08 16:30:34 | INFO     | nmd | [SID:20260808_163029] [CALL:7] logger.py:log_event():145 | Executing dynamic scan: nmap -sn 192.168.0.0/24
+2026-08-08 16:31:08 | INFO     | nmd | [SID:20260808_163029] [CALL:8] logger.py:log_event():145 | Scan finished in 33.89s. Devices found: 2
+2026-08-08 16:31:08 | INFO     | nmd | [SID:20260808_163029] [CALL:9] logger.py:log_event():145 | Scan completed in 33.89s. Found 2 devices.
+2026-08-08 16:31:08 | DEBUG    | nmd | [SID:20260808_163029] [CALL:10] logger.py:log_event():145 | Analysis result: 2 new, 0 returned, 0 disconnected
+2026-08-08 16:31:08 | DEBUG    | nmd | [SID:20260808_163029] [CALL:11] logger.py:log_event():145 | Scan record saved to database: 2 devices
+2026-08-08 16:31:08 | INFO     | nmd | [SID:20260808_163029] [CALL:12] logger.py:log_event():145 | New device detected: 192.168.0.1
+2026-08-08 16:31:08 | INFO     | nmd | [SID:20260808_163029] [CALL:13] logger.py:log_event():145 | New device detected: 192.168.0.101
+2026-08-08 16:31:08 | INFO     | nmd | [SID:20260808_163029] [CALL:14] logger.py:log_event():145 | Generated 2 alerts from scan
+2026-08-08 16:31:08 | INFO     | nmd | [SID:20260808_163029] [CALL:15] logger.py:log_event():145 | Scheduler scan completed successfully: 2 total devices, 2 new, 0 disconnected.
+2026-08-08 16:31:20 | INFO     | nmd | [SID:20260808_163029] [CALL:16] logger.py:log_event():145 | GUI closed by user.
+2026-08-08 16:31:27 | INFO     | nmd | ============================================================
+2026-08-08 16:31:27 | INFO     | nmd | LOGGER INITIALIZED - Session: 2026-08-08 16:31:27
+2026-08-08 16:31:27 | INFO     | nmd | Log file: /home/pc/stageOBSV/v2/netwkscan/src/data/logs/audit.log
+2026-08-08 16:31:27 | INFO     | nmd | Python version: 3.14.6 (main, Jun 11 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]
+2026-08-08 16:31:27 | INFO     | nmd | ============================================================
+2026-08-08 16:31:27 | INFO     | nmd | Starting NMD application...
+2026-08-08 16:31:27 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-08 16:31:28 | INFO     | nmd | [SID:20260808_163128] [CALL:1] logger.py:log_event():145 | Subnet changed from 192.168.0.0/24 to 192.168.11.0/24
+2026-08-08 16:31:28 | INFO     | nmd | [SID:20260808_163128] [CALL:2] logger.py:log_event():145 | Configuration successfully saved to /home/pc/stageOBSV/v2/netwkscan/data/config.json.
+2026-08-08 16:31:28 | INFO     | nmd | [SID:20260808_163128] [CALL:3] logger.py:log_event():145 | Developer 4 page 'custom_scan' registered automatically.
+2026-08-08 16:31:28 | INFO     | nmd | [SID:20260808_163128] [CALL:4] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
+2026-08-08 16:31:28 | INFO     | nmd | Launching GUI main window.
+2026-08-08 16:31:31 | INFO     | nmd | [SID:20260808_163128] [CALL:5] logger.py:log_event():145 | Manual scan requested via scheduler run_now().
+2026-08-08 16:31:31 | INFO     | nmd | [SID:20260808_163128] [CALL:6] logger.py:log_event():145 | Manual scan triggered from dashboard.
+2026-08-08 16:31:31 | INFO     | nmd | [SID:20260808_163128] [CALL:7] logger.py:log_event():145 | Scheduler scan started with target: 192.168.11.0/24, type: quick
+2026-08-08 16:31:31 | INFO     | nmd | [SID:20260808_163128] [CALL:8] logger.py:log_event():145 | Scheduler starting 'quick' scan on target '192.168.11.0/24'.
+2026-08-08 16:31:31 | INFO     | nmd | [SID:20260808_163128] [CALL:9] logger.py:log_event():145 | Executing dynamic scan: nmap -sn 192.168.11.0/24
+2026-08-08 16:31:34 | INFO     | nmd | [SID:20260808_163128] [CALL:10] logger.py:log_event():145 | Scan finished in 3.02s. Devices found: 8
+2026-08-08 16:31:34 | INFO     | nmd | [SID:20260808_163128] [CALL:11] logger.py:log_event():145 | Scan completed in 3.02s. Found 8 devices.
+2026-08-08 16:31:35 | DEBUG    | nmd | [SID:20260808_163128] [CALL:12] logger.py:log_event():145 | Analysis result: 8 new, 0 returned, 2 disconnected
+2026-08-08 16:31:35 | DEBUG    | nmd | [SID:20260808_163128] [CALL:13] logger.py:log_event():145 | Scan record saved to database: 8 devices
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:14] logger.py:log_event():145 | New device detected: 192.168.11.1
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:15] logger.py:log_event():145 | New device detected: 192.168.11.117
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:16] logger.py:log_event():145 | New device detected: 192.168.11.118
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:17] logger.py:log_event():145 | New device detected: 192.168.11.124
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:18] logger.py:log_event():145 | New device detected: 192.168.11.127
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:19] logger.py:log_event():145 | New device detected: 192.168.11.131
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:20] logger.py:log_event():145 | New device detected: 192.168.11.139
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:21] logger.py:log_event():145 | New device detected: 192.168.11.222
+2026-08-08 16:31:35 | WARNING  | nmd | [SID:20260808_163128] [CALL:22] logger.py:log_event():145 | Device disconnected: 192.168.0.1
+2026-08-08 16:31:35 | WARNING  | nmd | [SID:20260808_163128] [CALL:23] logger.py:log_event():145 | Device disconnected: 192.168.0.101
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:24] logger.py:log_event():145 | Generated 10 alerts from scan
+2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:25] logger.py:log_event():145 | Scheduler scan completed successfully: 8 total devices, 8 new, 2 disconnected.
+2026-08-08 16:31:42 | INFO     | nmd | [SID:20260808_163128] [CALL:26] logger.py:log_event():145 | GUI closed by user.

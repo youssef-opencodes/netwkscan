@@ -64,7 +64,7 @@ class NetworkScheduler:
         """Perform a single scan execution pipeline.
 
         Prevents overlapping scans if a scan is already running.
-        Pipeline: Scheduler -> Load Preset -> Generate Command -> Run Scan -> Analyzer -> DB -> AlertEngine.
+        Pipeline: Scheduler -> Auto-detect subnet -> Load Preset -> Generate Command -> Run Scan -> Analyzer -> DB -> AlertEngine.
         """
         if not self._scan_lock.acquire(blocking=False):
             log_event("Scan already in progress. Skipping duplicate scan run.", "warning")
@@ -72,10 +72,35 @@ class NetworkScheduler:
 
         self._is_scanning = True
         try:
+            # Load config and auto-detect subnet if needed
             cfg = load_config()
-            target = cfg.get("subnet") or cfg.get("default_scan_target", "192.168.1.0/24")
+
+            # Auto-detect gateway if subnet is missing or default
+            target = cfg.get("subnet")
+            if not target or target == "192.168.1.0/24":
+                try:
+                    from utils.config import detect_gateway
+
+                    detected = detect_gateway()
+                    if detected and detected != "192.168.1.0/24":
+                        target = detected
+                        # Update config with detected subnet
+                        cfg["subnet"] = detected
+                        from utils.config import save_config
+
+                        save_config(cfg)
+                        log_event(f"Auto-detected and updated subnet to: {detected}", "info")
+                    else:
+                        target = "192.168.1.0/24"
+                        log_event("Using fallback subnet: 192.168.1.0/24", "warning")
+                except Exception as e:
+                    target = "192.168.1.0/24"
+                    log_event(f"Failed to auto-detect subnet, using fallback: {e}", "warning")
+
             scan_type = cfg.get("scan_type", "quick")
             port_range = cfg.get("port_range", "1-1024")
+
+            log_event(f"Scheduler scan started with target: {target}, type: {scan_type}", "info")
 
             # Determine if explicit preset or preset scan_type is configured
             preset_name = self._preset_name
@@ -86,12 +111,18 @@ class NetworkScheduler:
             if preset_name:
                 try:
                     from presets import get_preset
+
                     preset_data = get_preset(preset_name)
+                    log_event(f"Loaded preset: {preset_name}", "debug")
                 except Exception as p_err:
                     log_event(f"Failed to fetch preset '{preset_name}': {p_err}", "warning")
 
+            # Execute scan with preset or default options
             if preset_data:
-                log_event(f"Scheduler starting preset '{preset_name}' scan on target '{target}'.", "info")
+                log_event(
+                    f"Scheduler starting preset '{preset_name}' scan on target '{target}'.",
+                    "info",
+                )
                 p_args = preset_data.get("args")
                 p_ports = preset_data.get("ports")
                 scan_results, duration = self.scanner.custom_scan(
@@ -108,9 +139,16 @@ class NetworkScheduler:
                 else:
                     scan_results, duration = self.scanner.quick_scan(target)
 
+            log_event(f"Scan completed in {duration:.2f}s. Found {len(scan_results)} devices.", "info")
 
             # 2. Compare scan results with DB using Dev 1's analyzer
             analysis = analyzer.analyze_scan(scan_results)
+            log_event(
+                f"Analysis result: {len(analysis.get('new', []))} new, "
+                f"{len(analysis.get('returned', []))} returned, "
+                f"{len(analysis.get('disconnected', []))} disconnected",
+                "debug",
+            )
 
             # Extract generated command from scanner for audit trail
             scan_cmd = getattr(self.scanner, "last_command", None)
@@ -125,9 +163,12 @@ class NetworkScheduler:
                 "scan_command": scan_cmd,
             }
             database.add_scan(scan_record_data)
+            log_event(f"Scan record saved to database: {len(scan_results)} devices", "debug")
 
             # 4. Generate alerts using Dev 2's AlertEngine
-            self.alert_engine.process_scan_result(analysis)
+            alerts = self.alert_engine.process_scan_result(analysis)
+            if alerts:
+                log_event(f"Generated {len(alerts)} alerts from scan", "info")
 
             log_event(
                 f"Scheduler scan completed successfully: {len(scan_results)} total devices, "
@@ -136,13 +177,17 @@ class NetworkScheduler:
             )
             return analysis
 
-
         except Exception as exc:
-            log_event(f"Error during scheduler scan execution: {exc}", "error")
+            log_event(f"Error during scheduler scan execution: {exc}", "error", exc_info=True)
             return None
+
         finally:
             self._is_scanning = False
-            self._scan_lock.release()
+            try:
+                self._scan_lock.release()
+            except RuntimeError:
+                # Lock wasn't acquired; ignore
+                pass
 
     def _worker_loop(self) -> None:
         """Background thread loop executing periodic scans."""
