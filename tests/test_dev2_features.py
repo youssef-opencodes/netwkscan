@@ -1,15 +1,16 @@
 """Unit tests specifically covering Developer 2 new features."""
-from unittest.mock import MagicMock, patch
-import pytest
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from core.scanner import Scanner
 from core.alert_engine import AlertEngine
+from core.scanner import ScanResult, Scanner
 from core.scheduler import NetworkScheduler
-from presets import load_presets, get_preset, save_preset, delete_preset
+from presets import delete_preset, get_preset, load_presets, save_preset
 
 
 def test_scanner_dynamic_command_building():
@@ -117,7 +118,13 @@ def test_presets_manager_lifecycle():
 def test_scheduler_preset_execution(mock_analyze, mock_add_scan):
     mock_analyze.return_value = {"new": [], "returned": [], "disconnected": [], "timestamp": "t"}
     mock_scanner = MagicMock(spec=Scanner)
-    mock_scanner.custom_scan.return_value = ([], 0.5)
+    mock_scanner.execute_scan.return_value = ScanResult(
+        success=True,
+        status_code="SUCCESS",
+        devices=[],
+        duration=0.5,
+        command="nmap -T4 -F 192.168.1.0/24",
+    )
     mock_scanner.last_command = "nmap -T4 -F 192.168.1.0/24"
 
     scheduler = NetworkScheduler(scanner=mock_scanner)
@@ -125,5 +132,5 @@ def test_scheduler_preset_execution(mock_analyze, mock_add_scan):
     assert scheduler.get_preset() == "Quick"
 
     scheduler._execute_scan()
-    mock_scanner.custom_scan.assert_called_once()
+    mock_scanner.execute_scan.assert_called_once()
     mock_add_scan.assert_called_once()

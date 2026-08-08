@@ -1,13 +1,21 @@
 """Unit tests for core/scanner.py Nmap scanner module."""
-from unittest.mock import MagicMock, patch
-import pytest
-
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-import nmap
-from core.scanner import Scanner
+from core.scanner import (
+    ScanResult,
+    Scanner,
+    find_nmap_binary,
+    guess_device_type,
+    is_admin,
+    parse_nmap_xml,
+    validate_target,
+)
 
 
 def test_scanner_init():
@@ -15,83 +23,81 @@ def test_scanner_init():
     assert scanner.last_duration == 0.0
 
 
-def test_parse_nmap_results_complete():
+def test_validate_target():
+    is_valid, _ = validate_target("10.222.83.0/24")
+    assert is_valid is True
+
+    is_valid, _ = validate_target("192.168.1.1")
+    assert is_valid is True
+
+    is_valid, _ = validate_target("")
+    assert is_valid is False
+
+    is_valid, _ = validate_target("invalid_target_123$$$")
+    assert is_valid is False
+
+
+def test_guess_device_type():
+    dev_type = guess_device_type({"80": "http", "53": "domain"}, "Router OS")
+    assert dev_type == "Router"
+
+    dev_type = guess_device_type({"3389": "ms-wbt-server"}, "Windows 11")
+    assert dev_type == "PC"
+
+    dev_type = guess_device_type({"22": "ssh", "3306": "mysql"}, "Linux Ubuntu")
+    assert dev_type == "Server"
+
+
+def test_build_nmap_command():
     scanner = Scanner()
-
-    mock_nm = MagicMock()
-    mock_nm.all_hosts.return_value = ["192.168.1.10"]
-    mock_nm.__getitem__.return_value = {
-        "addresses": {"ipv4": "192.168.1.10", "mac": "AA:BB:CC:DD:EE:FF"},
-        "hostnames": [{"name": "router.local", "type": "PTR"}],
-        "vendor": {"AA:BB:CC:DD:EE:FF": "Cisco Systems"},
-        "osmatch": [{"name": "Linux 5.x", "accuracy": "95"}],
-    }
-
-    parsed = scanner.parse_nmap_results(mock_nm)
-    assert len(parsed) == 1
-    assert parsed[0]["ip"] == "192.168.1.10"
-    assert parsed[0]["hostname"] == "router.local"
-    assert parsed[0]["mac"] == "AA:BB:CC:DD:EE:FF"
-    assert parsed[0]["vendor"] == "Cisco Systems"
-    assert parsed[0]["os"] == "Linux 5.x"
+    cmd = scanner.build_nmap_command(
+        target="10.222.83.0/24",
+        ports="1-1024",
+        arguments="-sV -O",
+        timing="-T4",
+    )
+    assert "10.222.83.0/24" in cmd
+    assert "-p 1-1024" in cmd
+    assert "-sV" in cmd
+    assert "-T4" in cmd
 
 
-def test_parse_nmap_results_missing_fields():
+def test_parse_nmap_xml_sample():
+    sample_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<nmaprun format="xml" version="7.94">
+<host>
+    <status state="up" reason="arp-response"/>
+    <address addr="10.222.83.15" addrtype="ipv4"/>
+    <address addr="00:11:22:33:44:55" addrtype="mac" vendor="Dell Inc"/>
+    <hostnames><hostname name="test-host.local" type="PTR"/></hostnames>
+    <ports>
+        <port protocol="tcp" portid="22">
+            <state state="open"/>
+            <service name="ssh" product="OpenSSH" version="8.2p1"/>
+        </port>
+        <port protocol="tcp" portid="80">
+            <state state="open"/>
+            <service name="http" product="Apache" version="2.4.41"/>
+        </port>
+    </ports>
+    <os><osmatch name="Linux 5.4"/></os>
+</host>
+</nmaprun>
+"""
+    devices = parse_nmap_xml(sample_xml)
+    assert len(devices) == 1
+    dev = devices[0]
+    assert dev["ip"] == "10.222.83.15"
+    assert dev["mac"] == "00:11:22:33:44:55"
+    assert dev["vendor"] == "Dell Inc"
+    assert dev["hostname"] == "test-host.local"
+    assert dev["os"] == "Linux 5.4"
+    assert dev["ports"] == {"22": "ssh", "80": "http"}
+
+
+def test_scanner_execute_invalid_target():
     scanner = Scanner()
-
-    mock_nm = MagicMock()
-    mock_nm.all_hosts.return_value = ["192.168.1.20"]
-    mock_nm.__getitem__.return_value = {
-        "addresses": {"ipv4": "192.168.1.20"},  # No MAC address
-        "hostnames": [],
-        "vendor": {},
-        "osmatch": [],
-    }
-
-    parsed = scanner.parse_nmap_results(mock_nm)
-    assert len(parsed) == 1
-    assert parsed[0]["ip"] == "192.168.1.20"
-    assert parsed[0]["hostname"] == ""
-    assert parsed[0]["mac"] == ""
-    assert parsed[0]["vendor"] == ""
-    assert parsed[0]["os"] == ""
-
-
-def test_scanner_invalid_target():
-    scanner = Scanner()
-    results, duration = scanner.quick_scan("")
-    assert results == []
-    assert duration == 0.0
-
-
-@patch("nmap.PortScanner")
-def test_scanner_quick_scan_mocked(mock_port_scanner_cls):
-    mock_instance = MagicMock()
-    mock_port_scanner_cls.return_value = mock_instance
-    mock_instance.all_hosts.return_value = ["192.168.1.50"]
-    mock_instance.__getitem__.return_value = {
-        "addresses": {"ipv4": "192.168.1.50"},
-        "hostnames": [{"name": "desktop", "type": "user"}],
-        "vendor": {},
-        "osmatch": [],
-    }
-
-    scanner = Scanner()
-    results, duration = scanner.quick_scan("192.168.1.0/24")
-
-    assert len(results) == 1
-    assert results[0]["ip"] == "192.168.1.50"
-    assert duration >= 0.0
-    mock_instance.scan.assert_called_once_with(hosts="192.168.1.0/24", ports=None, arguments="-sn")
-
-
-@patch("nmap.PortScanner")
-def test_scanner_nmap_error_handling(mock_port_scanner_cls):
-    mock_instance = MagicMock()
-    mock_port_scanner_cls.return_value = mock_instance
-    mock_instance.scan.side_effect = nmap.PortScannerError("Nmap error simulation")
-
-    scanner = Scanner()
-    results, duration = scanner.quick_scan("192.168.1.1")
-    assert results == []
-    assert duration >= 0.0
+    res = scanner.execute_scan("invalid@@target")
+    assert res.success is False
+    assert res.status_code == "INVALID_TARGET"
+    assert res.devices == []
