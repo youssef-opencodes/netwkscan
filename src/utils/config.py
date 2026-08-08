@@ -16,6 +16,49 @@ from pathlib import Path
 import json
 
 
+
+import subprocess
+import re
+import socket
+
+def detect_gateway() -> str:
+    """Auto-detect the default gateway IP and return as subnet."""
+    try:
+        # Method 1: Get default gateway via ip route (Linux)
+        result = subprocess.run(['ip', 'route', 'show', 'default'], 
+                              capture_output=True, text=True, timeout=2)
+        match = re.search(r'default via (\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            ip = match.group(1)
+            return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    try:
+        # Method 2: Get route to 8.8.8.8
+        result = subprocess.run(['ip', 'route', 'get', '8.8.8.8'], 
+                              capture_output=True, text=True, timeout=2)
+        match = re.search(r'via (\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            ip = match.group(1)
+            return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    try:
+        # Method 3: Get local IP via socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+        if ip and ip != '127.0.0.1':
+            return ip.rsplit('.', 1)[0] + '.0/24'
+    except:
+        pass
+    
+    # Fallback
+    return "192.168.1.0/24"
+
 def detect_router_ip() -> str:
     """Auto-detect the router/gateway IP and return as subnet."""
     try:
@@ -162,38 +205,40 @@ def validate_config(config: dict[str, Any]) -> tuple[bool, str]:
     return True, ""
 
 
-
 def load_config(path: str | Path | None = None) -> dict[str, Any]:
-    """Load configuration from file.
-
-    If file does not exist, creates it with defaults.
-    If file contains invalid JSON or fails validation, logs an error and
-    falls back to default configuration.
-    """
+    """Load configuration, auto-detecting subnet if needed."""
     target_path = Path(path) if path else DEFAULT_CONFIG_PATH
-
+    
+    # Ensure directory exists
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # If config doesn't exist, create with auto-detected subnet
     if not target_path.exists():
-        log_event(f"Config file not found at {target_path}. Creating default configuration.", "info")
-        default_cfg = get_default_config()
-        save_config(default_cfg, target_path)
-        return default_cfg
-
+        detected = detect_gateway()
+        log_event(f"Auto-detected subnet: {detected}", "info")
+        config = get_default_config()
+        config["subnet"] = detected
+        save_config(config, target_path)
+        return config
+    
+    # Load existing config
     try:
-        with open(target_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except json.JSONDecodeError as exc:
-        log_event(f"Invalid JSON in config file {target_path}: {exc}. Falling back to default configuration.", "error")
-        return get_default_config()
-    except Exception as exc:
-        log_event(f"Error reading config file {target_path}: {exc}. Falling back to default configuration.", "error")
-        return get_default_config()
-
-    is_valid, err_msg = validate_config(data)
-    if not is_valid:
-        log_event(f"Invalid configuration in {target_path}: {err_msg}. Falling back to default configuration.", "error")
-        return get_default_config()
-
-    return data
+        with open(target_path, 'r') as f:
+            config = json.load(f)
+    except:
+        config = get_default_config()
+    
+    # Auto-detect and update if subnet is default or old
+    detected = detect_gateway()
+    current_subnet = config.get("subnet", "")
+    
+    # If subnet doesn't match detected, update it
+    if current_subnet != detected and detected != "192.168.1.0/24":
+        log_event(f"Subnet changed from {current_subnet} to {detected}", "info")
+        config["subnet"] = detected
+        save_config(config, target_path)
+    
+    return config
 
 
 def save_config(config: dict[str, Any], path: str | Path | None = None) -> bool:
