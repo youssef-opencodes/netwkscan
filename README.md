@@ -7,5 +7,5 @@ source venv/bin/activate
 # 3. Install dependencies (FIXED: requirements.txt, not requirement.txt)
 pip install -r requirements.txt
 
-# 4. Run the application
-python main.py
+# 4. Run with sudo (for full features)
+sudo ./venv/bin/python main.py
