@@ -151,3 +151,60 @@
 2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:24] logger.py:log_event():145 | Generated 10 alerts from scan
 2026-08-08 16:31:35 | INFO     | nmd | [SID:20260808_163128] [CALL:25] logger.py:log_event():145 | Scheduler scan completed successfully: 8 total devices, 8 new, 2 disconnected.
 2026-08-08 16:31:42 | INFO     | nmd | [SID:20260808_163128] [CALL:26] logger.py:log_event():145 | GUI closed by user.
+2026-08-08 16:34:12 | INFO     | nmd | ============================================================
+2026-08-08 16:34:12 | INFO     | nmd | LOGGER INITIALIZED - Session: 2026-08-08 16:34:12
+2026-08-08 16:34:12 | INFO     | nmd | Log file: /home/pc/stageOBSV/v2/netwkscan/src/data/logs/audit.log
+2026-08-08 16:34:12 | INFO     | nmd | Python version: 3.14.6 (main, Jun 11 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]
+2026-08-08 16:34:12 | INFO     | nmd | ============================================================
+2026-08-08 16:34:12 | INFO     | nmd | Starting NMD application...
+2026-08-08 16:34:12 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-08 16:34:13 | INFO     | nmd | [SID:20260808_163413] [CALL:1] logger.py:log_event():145 | Developer 4 page 'custom_scan' registered automatically.
+2026-08-08 16:34:13 | INFO     | nmd | [SID:20260808_163413] [CALL:2] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
+2026-08-08 16:34:13 | INFO     | nmd | Launching GUI main window.
+2026-08-08 16:35:56 | ERROR    | nmd | [SID:20260808_163413] [CALL:3] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:35:57 | ERROR    | nmd | [SID:20260808_163413] [CALL:4] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:35:58 | ERROR    | nmd | [SID:20260808_163413] [CALL:5] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:36:29 | ERROR    | nmd | [SID:20260808_163413] [CALL:6] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:36:30 | ERROR    | nmd | [SID:20260808_163413] [CALL:7] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:36:30 | ERROR    | nmd | [SID:20260808_163413] [CALL:8] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:36:32 | ERROR    | nmd | [SID:20260808_163413] [CALL:9] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:02 | ERROR    | nmd | [SID:20260808_163413] [CALL:10] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:02 | ERROR    | nmd | [SID:20260808_163413] [CALL:11] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:04 | ERROR    | nmd | [SID:20260808_163413] [CALL:12] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:04 | ERROR    | nmd | [SID:20260808_163413] [CALL:13] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:32 | INFO     | nmd | ============================================================
+2026-08-08 16:37:32 | INFO     | nmd | LOGGER INITIALIZED - Session: 2026-08-08 16:37:32
+2026-08-08 16:37:32 | INFO     | nmd | Log file: /home/pc/stageOBSV/v2/netwkscan/src/data/logs/audit.log
+2026-08-08 16:37:32 | INFO     | nmd | Python version: 3.14.6 (main, Jun 11 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]
+2026-08-08 16:37:32 | INFO     | nmd | ============================================================
+2026-08-08 16:37:32 | INFO     | nmd | Starting NMD application...
+2026-08-08 16:37:32 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-08 16:37:33 | INFO     | nmd | [SID:20260808_163733] [CALL:1] logger.py:log_event():145 | Developer 4 page 'custom_scan' registered automatically.
+2026-08-08 16:37:33 | INFO     | nmd | [SID:20260808_163733] [CALL:2] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
+2026-08-08 16:37:33 | INFO     | nmd | Launching GUI main window.
+2026-08-08 16:37:35 | ERROR    | nmd | [SID:20260808_163733] [CALL:3] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:38 | ERROR    | nmd | [SID:20260808_163733] [CALL:4] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:38 | ERROR    | nmd | [SID:20260808_163733] [CALL:5] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:39 | ERROR    | nmd | [SID:20260808_163733] [CALL:6] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:40 | ERROR    | nmd | [SID:20260808_163733] [CALL:7] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:40 | ERROR    | nmd | [SID:20260808_163733] [CALL:8] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:42 | ERROR    | nmd | [SID:20260808_163733] [CALL:9] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:42 | ERROR    | nmd | [SID:20260808_163733] [CALL:10] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:42 | ERROR    | nmd | [SID:20260808_163733] [CALL:11] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:43 | ERROR    | nmd | [SID:20260808_163733] [CALL:12] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:43 | ERROR    | nmd | [SID:20260808_163733] [CALL:13] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:43 | ERROR    | nmd | [SID:20260808_163733] [CALL:14] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:43 | ERROR    | nmd | [SID:20260808_163733] [CALL:15] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:43 | ERROR    | nmd | [SID:20260808_163733] [CALL:16] logger.py:log_event():145 | Failed to build page 'custom_scan': Expecting value: line 2 column 1 (char 1)
+2026-08-08 16:37:45 | INFO     | nmd | [SID:20260808_163733] [CALL:17] logger.py:log_event():145 | GUI closed by user.
+2026-08-08 16:39:22 | INFO     | nmd | ============================================================
+2026-08-08 16:39:22 | INFO     | nmd | LOGGER INITIALIZED - Session: 2026-08-08 16:39:22
+2026-08-08 16:39:22 | INFO     | nmd | Log file: /home/pc/stageOBSV/v2/netwkscan/src/data/logs/audit.log
+2026-08-08 16:39:22 | INFO     | nmd | Python version: 3.14.6 (main, Jun 11 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]
+2026-08-08 16:39:22 | INFO     | nmd | ============================================================
+2026-08-08 16:39:22 | INFO     | nmd | Starting NMD application...
+2026-08-08 16:39:22 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-08 16:39:22 | INFO     | nmd | [SID:20260808_163922] [CALL:1] logger.py:log_event():145 | Developer 4 page 'custom_scan' registered automatically.
+2026-08-08 16:39:22 | INFO     | nmd | [SID:20260808_163922] [CALL:2] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
+2026-08-08 16:39:23 | INFO     | nmd | Launching GUI main window.
+2026-08-08 16:39:27 | INFO     | nmd | [SID:20260808_163922] [CALL:3] logger.py:log_event():145 | GUI closed by user.
