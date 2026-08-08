@@ -208,3 +208,14 @@
 2026-08-08 16:39:22 | INFO     | nmd | [SID:20260808_163922] [CALL:2] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
 2026-08-08 16:39:23 | INFO     | nmd | Launching GUI main window.
 2026-08-08 16:39:27 | INFO     | nmd | [SID:20260808_163922] [CALL:3] logger.py:log_event():145 | GUI closed by user.
+2026-08-08 16:40:14 | INFO     | nmd | ============================================================
+2026-08-08 16:40:14 | INFO     | nmd | LOGGER INITIALIZED - Session: 2026-08-08 16:40:14
+2026-08-08 16:40:14 | INFO     | nmd | Log file: /home/pc/stageOBSV/v2/netwkscan/src/data/logs/audit.log
+2026-08-08 16:40:14 | INFO     | nmd | Python version: 3.14.6 (main, Jun 11 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]
+2026-08-08 16:40:14 | INFO     | nmd | ============================================================
+2026-08-08 16:40:14 | INFO     | nmd | Starting NMD application...
+2026-08-08 16:40:14 | INFO     | nmd | Database initialized (data/nmd.db).
+2026-08-08 16:40:15 | INFO     | nmd | [SID:20260808_164015] [CALL:1] logger.py:log_event():145 | Developer 4 page 'custom_scan' registered automatically.
+2026-08-08 16:40:15 | INFO     | nmd | [SID:20260808_164015] [CALL:2] logger.py:log_event():145 | Developer 4 page 'logs' registered automatically.
+2026-08-08 16:40:15 | INFO     | nmd | Launching GUI main window.
+2026-08-08 16:42:42 | INFO     | nmd | [SID:20260808_164015] [CALL:3] logger.py:log_event():145 | GUI closed by user.
