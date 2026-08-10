@@ -71,19 +71,15 @@ def export_analysis_json(analysis: dict[str, Any], path: str | None = None) -> s
         log_event(f"Failed to write analysis JSON: {exc}", "error")
         return None
 
-
 def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) -> dict[str, Any]:
     """Compare a scan's results against the database and update device states.
 
     Args:
-        scan_results: list of dicts, each with at least an "ip" key, and
-            optionally hostname, mac, vendor, os.
-        scan_failed: If True, indicates scan execution failed. Skip marking
-            devices as offline to prevent false disconnection alerts.
+        scan_results: list of dicts, each with at least an "ip" key
+        scan_failed: If True, skip marking devices offline
 
     Returns:
-        dict with keys "new", "returned", "disconnected" -> lists of IPs,
-        and "seen_ips" -> set of IPs present in this scan.
+        dict with new, returned, disconnected lists
     """
     seen_ips = {entry["ip"] for entry in (scan_results or []) if isinstance(entry, dict) and "ip" in entry}
     known_devices = get_all_devices()
@@ -93,22 +89,22 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
     returned_ips: list[str] = []
     disconnected_ips: list[str] = []
 
-    # If the scan failed, do NOT mark existing devices offline!
-    if scan_failed:
-        log_event("Scan failed flag is True; skipping disconnection processing.", "warning")
-        failed_result = {
+    if scan_failed or not seen_ips:
+        log_event("Scan failed or empty. Skipping database updates.", "warning")
+        return {
             "new": [],
             "returned": [],
             "disconnected": [],
             "seen_ips": set(),
-            "scan_results": [],
+            "scan_results": scan_results or [],
             "timestamp": datetime.utcnow().isoformat(),
             "scan_failed": True,
         }
-        export_analysis_json(failed_result)
-        return failed_result
 
-    # Devices found in this scan: either brand new, or returning/still online.
+    # DETECT if this is a single‑IP scan
+    is_single_ip_scan = all("/" not in ip for ip in seen_ips) and len(seen_ips) == 1
+
+    # Process found devices
     for entry in scan_results or []:
         if not isinstance(entry, dict) or "ip" not in entry:
             continue
@@ -116,19 +112,17 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
         existing = get_device_by_ip(ip)
 
         if existing is None:
-            add_device(
-                {
-                    "ip": ip,
-                    "hostname": entry.get("hostname"),
-                    "mac": entry.get("mac"),
-                    "vendor": entry.get("vendor"),
-                    "os": entry.get("os"),
-                    "device_type": entry.get("device_type") or "Unknown",
-                    "ports": entry.get("ports") or {},
-                    "status": "new",
-                    "appearance_count": 1,
-                }
-            )
+            add_device({
+                "ip": ip,
+                "hostname": entry.get("hostname"),
+                "mac": entry.get("mac"),
+                "vendor": entry.get("vendor"),
+                "os": entry.get("os"),
+                "device_type": entry.get("device_type") or "Unknown",
+                "ports": entry.get("ports") or {},
+                "status": "online",
+                "appearance_count": 1,
+            })
             new_ips.append(ip)
         else:
             was_offline = existing.status == "offline"
@@ -146,12 +140,15 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
             if was_offline:
                 returned_ips.append(ip)
 
-    # Devices known before but absent from this scan -> mark offline.
-    for ip in known_ips - seen_ips:
-        device = get_device_by_ip(ip)
-        if device is not None and device.status != "offline":
-            update_device_status(ip, status="offline")
-            disconnected_ips.append(ip)
+    #  IMPORTANT: Only mark offline if this was a FULL SUBNET scan
+    if not is_single_ip_scan:
+        for ip in known_ips - seen_ips:
+            device = get_device_by_ip(ip)
+            if device is not None and device.status != "offline":
+                update_device_status(ip, status="offline")
+                disconnected_ips.append(ip)
+    else:
+        log_event("Single‑IP scan detected. Skipping disconnection of other devices.", "info")
 
     result = {
         "new": new_ips,
