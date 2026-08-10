@@ -1,6 +1,8 @@
 """Device comparison logic: detects new, returned and disconnected devices
 between a fresh scan result and what's already stored in the database.
 """
+import json
+import os
 from datetime import datetime
 from typing import Any
 
@@ -11,6 +13,63 @@ from core.database import (
     update_device_status,
 )
 from utils.logger import log_event
+
+# JSON output written after every analyzed scan (overwritten each time).
+_SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+JSON_OUTPUT_DIR = os.path.join(_SRC_DIR, "data", "json")
+JSON_OUTPUT_PATH = os.path.join(JSON_OUTPUT_DIR, "output.json")
+
+
+def _build_json_report(analysis: dict[str, Any]) -> dict[str, Any]:
+    """Assemble the full analysis report, enriching IP lists with the
+    devices' current full DB records (ports, os, vendor, status, etc.).
+    """
+    seen_ips = analysis.get("seen_ips") or set()
+    all_ips = set(analysis.get("new", [])) | set(analysis.get("returned", [])) \
+        | set(analysis.get("disconnected", [])) | set(seen_ips)
+
+    devices: list[dict[str, Any]] = []
+    for ip in sorted(all_ips):
+        device = get_device_by_ip(ip)
+        if device is not None:
+            devices.append(device.to_dict())
+
+    return {
+        "timestamp": analysis.get("timestamp"),
+        "scan_failed": analysis.get("scan_failed", False),
+        "summary": {
+            "new_count": len(analysis.get("new", [])),
+            "returned_count": len(analysis.get("returned", [])),
+            "disconnected_count": len(analysis.get("disconnected", [])),
+            "total_seen": len(seen_ips),
+            "total_known_devices": len(get_all_devices()),
+        },
+        "new_devices": analysis.get("new", []),
+        "returned_devices": analysis.get("returned", []),
+        "disconnected_devices": analysis.get("disconnected", []),
+        "seen_ips": sorted(seen_ips),
+        "raw_scan_results": analysis.get("scan_results", []),
+        "devices": devices,
+    }
+
+
+def export_analysis_json(analysis: dict[str, Any], path: str | None = None) -> str | None:
+    """Write the full scan-analysis result to src/data/json/output.json.
+
+    Overwrites the file on every call so it always reflects the latest scan.
+    Never raises: a JSON-write failure must not break the scan/analysis flow.
+    """
+    output_path = path or JSON_OUTPUT_PATH
+    try:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        report = _build_json_report(analysis)
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2, ensure_ascii=False, default=str)
+        log_event(f"Analysis JSON written to {output_path}", "info")
+        return output_path
+    except OSError as exc:
+        log_event(f"Failed to write analysis JSON: {exc}", "error")
+        return None
 
 
 def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) -> dict[str, Any]:
@@ -37,7 +96,7 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
     # If the scan failed, do NOT mark existing devices offline!
     if scan_failed:
         log_event("Scan failed flag is True; skipping disconnection processing.", "warning")
-        return {
+        failed_result = {
             "new": [],
             "returned": [],
             "disconnected": [],
@@ -46,6 +105,8 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
             "timestamp": datetime.utcnow().isoformat(),
             "scan_failed": True,
         }
+        export_analysis_json(failed_result)
+        return failed_result
 
     # Devices found in this scan: either brand new, or returning/still online.
     for entry in scan_results or []:
@@ -92,7 +153,7 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
             update_device_status(ip, status="offline")
             disconnected_ips.append(ip)
 
-    return {
+    result = {
         "new": new_ips,
         "returned": returned_ips,
         "disconnected": disconnected_ips,
@@ -101,3 +162,5 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
         "timestamp": datetime.utcnow().isoformat(),
         "scan_failed": False,
     }
+    export_analysis_json(result)
+    return result
