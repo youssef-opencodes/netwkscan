@@ -262,6 +262,7 @@ class ScanResult:
         duration: float,
         command: str,
         error_message: str = "",
+        raw_xml: str = "",
     ) -> None:
         self.success = success
         self.status_code = status_code  # SUCCESS, NO_HOSTS_FOUND, NMAP_NOT_FOUND, PERMISSION_ERROR, INVALID_TARGET, TIMEOUT, EXECUTION_ERROR
@@ -269,10 +270,12 @@ class ScanResult:
         self.duration = duration
         self.command = command
         self.error_message = error_message
+        self.raw_xml = raw_xml
 
     def to_tuple(self) -> tuple[list[dict[str, Any]], float]:
         """Backwards compatibility tuple representation."""
         return self.devices, self.duration
+
 
 
 class Scanner:
@@ -572,7 +575,9 @@ class Scanner:
             duration=duration,
             command=full_cmd_str,
             error_message="" if devices else "0 hosts found.",
+            raw_xml=stdout_data,
         )
+
 
     def custom_scan(
         self,

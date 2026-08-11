@@ -1,5 +1,5 @@
 {
-    "subnet": "192.168.11.0/24",
+    "subnet": "10.222.83.0/24",
     "scan_interval": 60,
     "scan_type": "quick",
     "port_range": "1-1024",

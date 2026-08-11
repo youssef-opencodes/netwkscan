@@ -51,13 +51,16 @@ def test_validate_config():
     assert is_valid is False
 
 
-def test_load_save_config_tempfile(tmp_path: Path):
+def test_load_save_config_tempfile(tmp_path: Path, monkeypatch):
+    import utils.config
+    monkeypatch.setattr(utils.config, "detect_gateway", lambda: "192.168.1.0/24")
     config_file = tmp_path / "test_config.json"
 
     # Should create default config file if missing
     loaded = load_config(config_file)
     assert loaded["subnet"] == "192.168.1.0/24"
     assert config_file.exists()
+
 
     # Save modified config
     loaded["scan_interval"] = 120

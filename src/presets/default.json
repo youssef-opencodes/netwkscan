@@ -28,5 +28,11 @@
     "args": "-T4 -A -v",
     "ports": "1-65535",
     "description": "Aggressive, verbose, all-ports scan"
+  },
+  "Vulnerability Scan": {
+    "args": "-sV --script vuln",
+    "ports": "1-1024",
+    "description": "Safe vulnerability detection scan using Nmap NSE vuln scripts"
   }
 }
+

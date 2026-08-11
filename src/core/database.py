@@ -19,6 +19,7 @@ SessionLocal = sessionmaker(bind=engine, expire_on_commit=False, future=True)
 # Import models AFTER Base is defined, so their metaclass can register on it.
 from models.device import Device  # noqa: E402
 from models.scan import Scan  # noqa: E402
+from models.vulnerability import Vulnerability  # noqa: E402
 
 
 def init_db() -> None:
@@ -30,9 +31,8 @@ def init_db() -> None:
 
 
 def migrate_db() -> None:
-    """Add new columns (ports, device_type, scan_command) to a pre-existing
-    database created before plan2. Safe to call on a fresh DB (no-op).
-    """
+    """Add new columns/tables to a pre-existing database. Safe to call on a fresh DB."""
+    Base.metadata.create_all(engine)
     inspector = inspect(engine)
     with engine.begin() as conn:
         if inspector.has_table("devices"):
@@ -45,6 +45,7 @@ def migrate_db() -> None:
             scan_cols = {c["name"] for c in inspector.get_columns("scans")}
             if "scan_command" not in scan_cols:
                 conn.execute(text("ALTER TABLE scans ADD COLUMN scan_command VARCHAR(500)"))
+
 
 
 def get_session() -> Session:
@@ -171,3 +172,68 @@ def get_device_history(ip: str) -> dict:
         if device is None:
             return {}
         return device.to_dict()
+
+
+# --------------------------------------------------------------------------
+# Vulnerability CRUD
+# --------------------------------------------------------------------------
+def add_vulnerability(vuln_data: dict) -> Vulnerability:
+    """Insert a new vulnerability record."""
+    clean_data = vuln_data.copy()
+    clean_data.pop("vulnerability_id", None)
+    ts = clean_data.pop("timestamp", None)
+    if ts and "detected_at" not in clean_data:
+        try:
+            clean_data["detected_at"] = datetime.fromisoformat(ts)
+        except Exception:
+            pass
+
+    if "detection_script" in clean_data and "script_name" not in clean_data:
+        clean_data["script_name"] = clean_data.pop("detection_script")
+
+    if not clean_data.get("script_name"):
+        clean_data["script_name"] = "Nmap NSE Script"
+
+    valid_keys = {c.name for c in Vulnerability.__table__.columns}
+    filtered_data = {k: v for k, v in clean_data.items() if k in valid_keys}
+
+    with get_session() as session:
+        vuln = Vulnerability(**filtered_data)
+        session.add(vuln)
+        session.commit()
+        session.refresh(vuln)
+        return vuln
+
+
+
+
+def get_vulnerabilities(host: str | None = None, severity: str | None = None, limit: int = 100) -> list[Vulnerability]:
+    """Fetch vulnerabilities filtered by host and/or severity, newest first."""
+    with get_session() as session:
+        query = session.query(Vulnerability)
+        if host:
+            query = query.filter(Vulnerability.host == host)
+        if severity:
+            query = query.filter(Vulnerability.severity == severity.upper())
+        return query.order_by(desc(Vulnerability.detected_at)).limit(limit).all()
+
+
+def get_vulnerabilities_by_host(host: str) -> list[dict]:
+    """Return dict representations of all vulnerabilities for a specific host."""
+    vulns = get_vulnerabilities(host=host, limit=500)
+    return [v.to_dict() for v in vulns]
+
+
+def get_vulnerability_history(host: str | None = None) -> list[dict]:
+    """Return vulnerability history dictionary objects."""
+    vulns = get_vulnerabilities(host=host, limit=500)
+    return [v.to_dict() for v in vulns]
+
+
+def delete_vulnerabilities_for_scan(scan_id: int) -> int:
+    """Remove vulnerabilities associated with a specific scan ID."""
+    with get_session() as session:
+        count = session.query(Vulnerability).filter(Vulnerability.scan_id == scan_id).delete()
+        session.commit()
+        return count
+

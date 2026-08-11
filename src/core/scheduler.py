@@ -198,10 +198,15 @@ class NetworkScheduler:
 
                 p_ports = port_range
 
+            elif scan_type == "vulnerability":
+                p_args = "-sV --script vuln"
+                p_ports = port_range
+
             else:
                 # Quick scan / discovery scan
                 p_args = "-sn"
                 p_ports = None
+
 
             log_event(
                 f"Scheduler starting scan (type: '{scan_type}') "

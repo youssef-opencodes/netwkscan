@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-08-11T13:18:38.273098",
+  "scan_failed": false,
+  "summary": {
+    "new_count": 0,
+    "returned_count": 1,
+    "disconnected_count": 0,
+    "total_seen": 1,
+    "total_known_devices": 3
+  },
+  "new_devices": [],
+  "returned_devices": [
+    "10.222.83.89"
+  ],
+  "disconnected_devices": [],
+  "seen_ips": [
+    "10.222.83.89"
+  ],
+  "raw_scan_results": [
+    {
+      "ip": "10.222.83.89",
+      "hostname": "",
+      "mac": "",
+      "vendor": "",
+      "os": "",
+      "device_type": "Unknown",
+      "ports": {},
+      "port_details": [],
+      "status": "online"
+    }
+  ],
+  "devices": [
+    {
+      "id": 3,
+      "hostname": "",
+      "ip": "10.222.83.89",
+      "mac": "",
+      "vendor": "",
+      "os": "",
+      "device_type": "Unknown",
+      "ports": {},
+      "first_seen": "2026-08-08T18:22:24.066802",
+      "last_seen": "2026-08-11T13:18:38.260702",
+      "status": "online",
+      "custom_label": null,
+      "appearance_count": 3
+    }
+  ]
+}
