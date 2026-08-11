@@ -71,12 +71,17 @@ def export_analysis_json(analysis: dict[str, Any], path: str | None = None) -> s
         log_event(f"Failed to write analysis JSON: {exc}", "error")
         return None
 
-def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) -> dict[str, Any]:
+def analyze_scan(
+    scan_results: list[dict[str, Any]],
+    scan_failed: bool = False,
+    is_single_ip: bool | None = None,
+) -> dict[str, Any]:
     """Compare a scan's results against the database and update device states.
 
     Args:
         scan_results: list of dicts, each with at least an "ip" key
         scan_failed: If True, skip marking devices offline
+        is_single_ip: Explicit override for single IP scan detection
 
     Returns:
         dict with new, returned, disconnected lists
@@ -101,8 +106,12 @@ def analyze_scan(scan_results: list[dict[str, Any]], scan_failed: bool = False) 
             "scan_failed": True,
         }
 
-    # DETECT if this is a single‑IP scan
-    is_single_ip_scan = all("/" not in ip for ip in seen_ips) and len(seen_ips) == 1
+    # DETECT if this is a single‑IP scan unless explicitly overridden
+    if is_single_ip is not None:
+        is_single_ip_scan = is_single_ip
+    else:
+        is_single_ip_scan = all("/" not in ip for ip in seen_ips) and len(seen_ips) == 1
+
 
     # Process found devices
     for entry in scan_results or []:

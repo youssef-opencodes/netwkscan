@@ -126,9 +126,14 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "default_scan_target": "192.168.1.0/24",
     "last_timing_template": "-T4",
     "last_port_configuration": "1-1024",
+    "vulnerability_scan_enabled": True,
+    "vulnerability_scripts": "vuln",
+    "vulnerability_timeout": 300,
+    "vulnerability_report_directory": "data/reports",
+    "last_vulnerability_target": "192.168.1.0/24",
 }
 
-VALID_SCAN_TYPES = {"quick", "full", "custom"}
+VALID_SCAN_TYPES = {"quick", "full", "custom", "vulnerability"}
 
 
 def get_default_config() -> dict[str, Any]:
@@ -172,9 +177,10 @@ def validate_config(config: dict[str, Any]) -> tuple[bool, str]:
     if not isinstance(scan_type, str) or not scan_type.strip():
         return False, "scan_type must be a non-empty string."
 
-    known_types = {"quick", "full", "custom", "ping", "version", "os", "intense"}
+    known_types = {"quick", "full", "custom", "ping", "version", "os", "intense", "vulnerability"}
     if scan_type.lower() not in known_types and scan_type not in VALID_SCAN_TYPES:
         return False, f"scan_type must be one of standard types or valid presets, got '{scan_type}'."
+
 
     # Validate port_range
     port_range = config.get("port_range")

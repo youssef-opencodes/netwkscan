@@ -168,8 +168,10 @@ class MainWindow(ctk.CTk):
     def _register_developer4_pages(self) -> None:
         candidates = [
             ("custom_scan", "Custom scan", "gui.pages.custom_scan", ("CustomScanPage", "CustomScan")),
+            ("vulnerability_scan", "Vulnerability scan", "gui.pages.vulnerability_scan", ("VulnerabilityScanPage", "VulnerabilityScan")),
             ("logs", "Logs", "gui.pages.logs_page", ("LogsPage", "LogsFrame")),
         ]
+
         for key, label, module_path, class_names in candidates:
             try:
                 module = __import__(module_path, fromlist=list(class_names))

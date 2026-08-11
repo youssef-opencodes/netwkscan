@@ -90,8 +90,9 @@ def test_end_to_end_backend_flow():
             "os": "Linux",
         }
     ]
-    second_analysis = analyzer.analyze_scan(second_scan_results)
+    second_analysis = analyzer.analyze_scan(second_scan_results, is_single_ip=False)
     assert "192.168.1.101" in second_analysis["disconnected"]
+
 
     second_alerts = alert_engine.process_scan_result(second_analysis)
     disc_alert = next(a for a in second_alerts if a["type"] == "DISCONNECTED")

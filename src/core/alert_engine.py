@@ -91,10 +91,51 @@ class AlertEngine:
             port_alerts = self._analyze_port_changes(ip, current_ports, timestamp)
             generated_alerts.extend(port_alerts)
 
+        # Process VULNERABILITIES if present in analysis
+        vulnerabilities = analysis_result.get("vulnerabilities", [])
+        if vulnerabilities:
+            vuln_alerts = self.process_vulnerability_results(vulnerabilities, timestamp)
+            generated_alerts.extend(vuln_alerts)
+
         with self._lock:
             self._alerts.extend(generated_alerts)
 
         return generated_alerts
+
+    def process_vulnerability_results(
+        self, vulnerabilities: list[dict[str, Any]], timestamp: str | None = None
+    ) -> list[dict[str, Any]]:
+        """Generate NEW_VULNERABILITY_DETECTED alert dictionaries."""
+        ts = timestamp or datetime.utcnow().isoformat()
+        alerts: list[dict[str, Any]] = []
+
+        for v in vulnerabilities:
+            if not isinstance(v, dict):
+                continue
+            host = v.get("host")
+            port = v.get("port")
+            cve = v.get("cve") or "N/A"
+            title = v.get("title", "Vulnerability Finding")
+            severity = (v.get("severity") or "UNKNOWN").upper()
+
+            alert = {
+                "type": "NEW_VULNERABILITY_DETECTED",
+                "message": f"New vulnerability detected on {host}:{port or 'host'} - [{severity}] {title} ({cve})",
+                "ip": host,
+                "port": port,
+                "cve": cve,
+                "title": title,
+                "severity": severity,
+                "timestamp": ts,
+            }
+            alerts.append(alert)
+            log_event(alert["message"], "warning")
+
+        with self._lock:
+            self._alerts.extend(alerts)
+
+        return alerts
+
 
     def _analyze_port_changes(
         self, ip: str, current_ports: dict[str, str], timestamp: str
