@@ -1,0 +1,35 @@
+name: Build Windows exe
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build exe
+        run: |
+          pyinstaller --onefile --windowed --name NMD-windows `
+            --add-data "src/gui/resources;src/gui/resources" `
+            --add-data "src/presets;src/presets" `
+            --paths src `
+            main.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NMD-windows
+          path: dist/NMD-windows.exe
