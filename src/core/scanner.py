@@ -277,7 +277,6 @@ class ScanResult:
         return self.devices, self.duration
 
 
-
 class Scanner:
     """Cross-platform Nmap scanning engine."""
 
@@ -329,6 +328,12 @@ class Scanner:
 
         # Parse and process arguments
         args_str = (arguments or "").strip()
+
+        # 🔥 NEW: AUTO-ADD --script-timeout 30s FOR VULNERABILITY SCANS
+        if "--script" in args_str or "vuln" in args_str:
+            if "--script-timeout" not in args_str:
+                args_str += " --script-timeout 30s"
+                log_event("🔒 Added --script-timeout 30s to vulnerability scan to prevent hangs.", "info")
 
         # Privileged flags handling: SYN stealth (-sS) requires Admin/root.
         # Fallback to TCP Connect scan (-sT) if non-admin.
