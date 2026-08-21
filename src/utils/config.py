@@ -23,42 +23,14 @@ import re
 import socket
 
 def detect_gateway() -> str:
-    """Auto-detect the default gateway IP and return as subnet."""
-    try:
-        # Method 1: Get default gateway via ip route (Linux)
-        result = subprocess.run(['ip', 'route', 'show', 'default'], 
-                              capture_output=True, text=True, timeout=2)
-        match = re.search(r'default via (\d+\.\d+\.\d+\.\d+)', result.stdout)
-        if match:
-            ip = match.group(1)
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 2: Get route to 8.8.8.8
-        result = subprocess.run(['ip', 'route', 'get', '8.8.8.8'], 
-                              capture_output=True, text=True, timeout=2)
-        match = re.search(r'via (\d+\.\d+\.\d+\.\d+)', result.stdout)
-        if match:
-            ip = match.group(1)
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 3: Get local IP via socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-        s.close()
-        if ip and ip != '127.0.0.1':
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    # Fallback
-    return "192.168.1.0/24"
+    """Auto-detect the default gateway IP and return as subnet.
+
+    Delegates to detect_router_ip(), which correctly checks the Windows
+    'ipconfig' Default Gateway first (avoiding false positives from VPNs
+    or virtual adapters like VirtualBox/Hyper-V that can hijack the
+    socket-based route-to-8.8.8.8 trick).
+    """
+    return detect_router_ip()
 
 def detect_router_ip() -> str:
     """Auto-detect the router/gateway IP and return as /24 subnet string."""
