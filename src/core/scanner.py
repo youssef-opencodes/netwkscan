@@ -70,7 +70,7 @@ def install_nmap() -> bool:
         if system_name == "Windows":
             log_event("Nmap not found. Attempting auto-install via winget...", "info")
             subprocess.run(
-                ["winget", "install", "-e", "--id", "Nmap.Nmap", "--accept-package-agreements",
+                ["winget", "install", "-e", "--id", "Insecure.Nmap", "--accept-package-agreements",
                  "--accept-source-agreements"],
                 check=True, timeout=300,
             )
