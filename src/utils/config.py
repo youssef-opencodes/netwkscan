@@ -38,9 +38,31 @@ def detect_router_ip() -> str:
 
     # Method 1: Windows ipconfig / route print parsing
     if system_name == "Windows":
+        # 1a. PowerShell Get-NetRoute: locale-independent (works regardless
+        # of whether Windows display language is English, French, etc.)
+        try:
+            ps_cmd = (
+                "Get-NetRoute -DestinationPrefix '0.0.0.0/0' "
+                "| Sort-Object -Property RouteMetric "
+                "| Select-Object -First 1 -ExpandProperty NextHop"
+            )
+            output = subprocess.check_output(
+                ["powershell", "-NoProfile", "-Command", ps_cmd],
+                text=True, errors="ignore", timeout=5,
+            ).strip()
+            if re.match(r"^\d+\.\d+\.\d+\.\d+$", output) and output != "0.0.0.0":
+                parts = output.split(".")
+                return f"{parts[0]}.{parts[1]}.{parts[2]}.0/24"
+        except Exception:
+            pass
+
+        # 1b. ipconfig text parsing, matching both English and French labels
         try:
             output = subprocess.check_output("ipconfig", text=True, errors="ignore")
-            gateways = re.findall(r"Default Gateway[.\s]*:\s*(\d+\.\d+\.\d+\.\d+)", output)
+            gateways = re.findall(
+                r"(?:Default Gateway|Passerelle par d\u00e9faut)[.\s]*:\s*(\d+\.\d+\.\d+\.\d+)",
+                output,
+            )
             for gw in gateways:
                 if gw and gw != "0.0.0.0":
                     parts = gw.split(".")
