@@ -521,6 +521,12 @@ class Scanner:
 
         try:
             # Execute subprocess safely
+            popen_kwargs: dict[str, Any] = {}
+            if platform.system() == "Windows":
+                # Prevent a console window from flashing on screen when running
+                # nmap.exe from a windowed (--windowed) PyInstaller build.
+                popen_kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+
             self._active_process = subprocess.Popen(
                 cmd_args,
                 stdout=subprocess.PIPE,
@@ -528,6 +534,7 @@ class Scanner:
                 text=True,
                 encoding="utf-8",
                 errors="replace",
+                **popen_kwargs,
             )
 
             stdout_data, stderr_data = self._active_process.communicate(timeout=timeout)

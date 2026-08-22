@@ -22,6 +22,7 @@ import subprocess
 import re
 import socket
 
+<<<<<<< HEAD
 def detect_gateway() -> str:
     """Auto-detect the default gateway IP and return as subnet.
 
@@ -31,8 +32,19 @@ def detect_gateway() -> str:
     socket-based route-to-8.8.8.8 trick).
     """
     return detect_router_ip()
+=======
+def detect_gateway() -> str | None:
+    """Auto-detect the default gateway IP and return as subnet.
+>>>>>>> main
 
-def detect_router_ip() -> str:
+    Delegates to detect_router_ip(), which correctly checks the Windows
+    'ipconfig' Default Gateway first (avoiding false positives from VPNs
+    or virtual adapters like VirtualBox/Hyper-V that can hijack the
+    socket-based route-to-8.8.8.8 trick).
+    """
+    return detect_router_ip()
+
+def detect_router_ip() -> str | None:
     """Auto-detect the router/gateway IP and return as /24 subnet string."""
     system_name = platform.system()
 
@@ -94,7 +106,11 @@ def detect_router_ip() -> str:
     except Exception:
         pass
 
-    return '192.168.1.0/24'
+    # All detection methods failed — return None so callers can distinguish
+    # "successfully detected 192.168.1.0/24" from "detection totally failed"
+    # (a hardcoded string here would be indistinguishable from a real
+    # network that genuinely uses 192.168.1.0/24, like most home routers).
+    return None
 
 
 # Resolve project root relative to this file: src/utils/config.py -> project_root

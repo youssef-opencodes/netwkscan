@@ -105,7 +105,11 @@ class NetworkScheduler:
 
                 detected = detect_gateway()
 
+<<<<<<< HEAD
                 if detected and detected != "192.168.1.0/24":
+=======
+                if detected:
+>>>>>>> main
                     if target != detected:
                         log_event(
                             f"Auto-detected subnet: {detected} "
