@@ -1,6 +1,19 @@
+# Environnements virtuels
+.venv/
+venv/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+
+# PyInstaller
+build/
+dist/
+
+# Variables d'environnement
 .env
-data/exports/
-data/nmd.db
-src/data/logs/*.log
+
+# IDE
+.vscode/
+.idea/
