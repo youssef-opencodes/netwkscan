@@ -96,40 +96,41 @@ class NetworkScheduler:
 
             target = cfg.get("subnet")
 
-            # Auto-detect subnet only when configuration is missing
-            # or still contains the old default.
-            if not target or target == "192.168.1.0/24":
-                try:
-                    from utils.config import detect_gateway
+            # Always re-detect the current network on every scan run
+            # (not just once), so a distributed .exe self-configures
+            # correctly on whatever machine/network it's launched on,
+            # instead of getting stuck on a stale/wrong cached subnet.
+            try:
+                from utils.config import detect_gateway, save_config
 
-                    detected = detect_gateway()
+                detected = detect_gateway()
 
-                    if detected and detected != "192.168.1.0/24":
-                        target = detected
-
-                        cfg["subnet"] = detected
-
-                        from utils.config import save_config
-
-                        save_config(cfg)
-
+                if detected:
+                    if target != detected:
                         log_event(
-                            f"Auto-detected and updated subnet to: {detected}",
+                            f"Auto-detected subnet: {detected} "
+                            f"(previous: {target}).",
                             "info",
                         )
-                    else:
-                        target = "192.168.1.0/24"
-                        log_event(
-                            "Using fallback subnet: 192.168.1.0/24",
-                            "warning",
-                        )
-
-                except Exception as exc:
+                        cfg["subnet"] = detected
+                        save_config(cfg)
+                    target = detected
+                elif not target:
                     target = "192.168.1.0/24"
                     log_event(
-                        f"Failed to auto-detect subnet, using fallback: {exc}",
+                        "Using fallback subnet: 192.168.1.0/24",
                         "warning",
                     )
+
+            except Exception as exc:
+                if not target:
+                    target = "192.168.1.0/24"
+                log_event(
+                    f"Auto-detect failed, using stored/fallback subnet "
+                    f"'{target}': {exc}",
+                    "warning",
+                )
+
 
             scan_type = cfg.get("scan_type", "quick")
             port_range = cfg.get("port_range", "1-1024")

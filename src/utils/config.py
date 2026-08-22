@@ -22,53 +22,47 @@ import subprocess
 import re
 import socket
 
-def detect_gateway() -> str:
-    """Auto-detect the default gateway IP and return as subnet."""
-    try:
-        # Method 1: Get default gateway via ip route (Linux)
-        result = subprocess.run(['ip', 'route', 'show', 'default'], 
-                              capture_output=True, text=True, timeout=2)
-        match = re.search(r'default via (\d+\.\d+\.\d+\.\d+)', result.stdout)
-        if match:
-            ip = match.group(1)
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 2: Get route to 8.8.8.8
-        result = subprocess.run(['ip', 'route', 'get', '8.8.8.8'], 
-                              capture_output=True, text=True, timeout=2)
-        match = re.search(r'via (\d+\.\d+\.\d+\.\d+)', result.stdout)
-        if match:
-            ip = match.group(1)
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    try:
-        # Method 3: Get local IP via socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-        s.close()
-        if ip and ip != '127.0.0.1':
-            return ip.rsplit('.', 1)[0] + '.0/24'
-    except:
-        pass
-    
-    # Fallback
-    return "192.168.1.0/24"
+def detect_gateway() -> str | None:
+    """Auto-detect the default gateway IP and return as subnet.
 
-def detect_router_ip() -> str:
+    Delegates to detect_router_ip(), which correctly checks the Windows
+    'ipconfig' Default Gateway first (avoiding false positives from VPNs
+    or virtual adapters like VirtualBox/Hyper-V that can hijack the
+    socket-based route-to-8.8.8.8 trick).
+    """
+    return detect_router_ip()
+
+def detect_router_ip() -> str | None:
     """Auto-detect the router/gateway IP and return as /24 subnet string."""
     system_name = platform.system()
 
     # Method 1: Windows ipconfig / route print parsing
     if system_name == "Windows":
+        # 1a. PowerShell Get-NetRoute: locale-independent (works regardless
+        # of whether Windows display language is English, French, etc.)
+        try:
+            ps_cmd = (
+                "Get-NetRoute -DestinationPrefix '0.0.0.0/0' "
+                "| Sort-Object -Property RouteMetric "
+                "| Select-Object -First 1 -ExpandProperty NextHop"
+            )
+            output = subprocess.check_output(
+                ["powershell", "-NoProfile", "-Command", ps_cmd],
+                text=True, errors="ignore", timeout=5,
+            ).strip()
+            if re.match(r"^\d+\.\d+\.\d+\.\d+$", output) and output != "0.0.0.0":
+                parts = output.split(".")
+                return f"{parts[0]}.{parts[1]}.{parts[2]}.0/24"
+        except Exception:
+            pass
+
+        # 1b. ipconfig text parsing, matching both English and French labels
         try:
             output = subprocess.check_output("ipconfig", text=True, errors="ignore")
-            gateways = re.findall(r"Default Gateway[.\s]*:\s*(\d+\.\d+\.\d+\.\d+)", output)
+            gateways = re.findall(
+                r"(?:Default Gateway|Passerelle par d\u00e9faut)[.\s]*:\s*(\d+\.\d+\.\d+\.\d+)",
+                output,
+            )
             for gw in gateways:
                 if gw and gw != "0.0.0.0":
                     parts = gw.split(".")
@@ -100,7 +94,11 @@ def detect_router_ip() -> str:
     except Exception:
         pass
 
-    return '192.168.1.0/24'
+    # All detection methods failed — return None so callers can distinguish
+    # "successfully detected 192.168.1.0/24" from "detection totally failed"
+    # (a hardcoded string here would be indistinguishable from a real
+    # network that genuinely uses 192.168.1.0/24, like most home routers).
+    return None
 
 
 # Resolve project root relative to this file: src/utils/config.py -> project_root

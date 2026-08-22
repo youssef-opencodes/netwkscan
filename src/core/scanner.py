@@ -59,6 +59,32 @@ def find_nmap_binary() -> str | None:
     return None
 
 
+def install_nmap() -> bool:
+    """Attempt to auto-install Nmap when it is missing (Windows: winget, Linux: apt).
+
+    Returns:
+        True if installation succeeded and the binary can now be found, False otherwise.
+    """
+    system_name = platform.system()
+    try:
+        if system_name == "Windows":
+            log_event("Nmap not found. Attempting auto-install via winget...", "info")
+            subprocess.run(
+                ["winget", "install", "-e", "--id", "Insecure.Nmap", "--accept-package-agreements",
+                 "--accept-source-agreements"],
+                check=True, timeout=300,
+            )
+        else:
+            log_event("Nmap not found. Attempting auto-install via apt-get (requires sudo)...", "info")
+            subprocess.run(["sudo", "apt-get", "update", "-y"], check=True, timeout=300)
+            subprocess.run(["sudo", "apt-get", "install", "-y", "nmap"], check=True, timeout=300)
+    except Exception as exc:
+        log_event(f"Nmap auto-install failed: {exc}. Please install Nmap manually.", "error")
+        return False
+
+    return find_nmap_binary() is not None
+
+
 def is_admin() -> bool:
     """Check if the current process has Administrator (Windows) or root (Linux) privileges."""
     try:
@@ -495,6 +521,12 @@ class Scanner:
 
         try:
             # Execute subprocess safely
+            popen_kwargs: dict[str, Any] = {}
+            if platform.system() == "Windows":
+                # Prevent a console window from flashing on screen when running
+                # nmap.exe from a windowed (--windowed) PyInstaller build.
+                popen_kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+
             self._active_process = subprocess.Popen(
                 cmd_args,
                 stdout=subprocess.PIPE,
@@ -502,6 +534,7 @@ class Scanner:
                 text=True,
                 encoding="utf-8",
                 errors="replace",
+                **popen_kwargs,
             )
 
             stdout_data, stderr_data = self._active_process.communicate(timeout=timeout)

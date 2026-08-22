@@ -11,7 +11,7 @@ from typing import Any, Callable
 
 import customtkinter as ctk
 
-from core.scanner import find_nmap_binary, is_admin
+from core.scanner import find_nmap_binary, install_nmap, is_admin
 from core.scheduler import NetworkScheduler
 from gui.pages.main_page import MainPage
 from gui.resources import color, font, layout, load_theme
@@ -34,6 +34,8 @@ class MainWindow(ctk.CTk):
 
         self._config = load_config()
         self._nmap_path = find_nmap_binary()
+        if self._nmap_path is None and install_nmap():  # auto-install if missing
+            self._nmap_path = find_nmap_binary()
         self._nmap_available = self._nmap_path is not None
         self._user_is_admin = is_admin()
 
