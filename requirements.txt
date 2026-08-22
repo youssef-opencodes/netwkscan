@@ -1,25 +1,22 @@
 # NMD - Network Monitoring Dashboard
-# Python dependencies
+# Python dependencies for Core and PySide6 Desktop GUI
 
 # Core Nmap integration
 python-nmap==0.7.1
 
-# GUI Framework
-customtkinter==5.2.2
+# GUI Framework - PySide6 (Qt 6 for Python)
+PySide6>=6.6.0
 
-# Database ORM - Python 3.14 compatible
+# Database ORM
 sqlalchemy>=2.0.35
 
-# Charts (future use)
+# Charts & Imaging
 matplotlib>=3.8.0
+pillow>=10.3.0
 
 # Packaging
-pyinstaller>=6.21.0
-
-# Additional utilities
-pillow>=10.3.0
+pyinstaller>=6.10.0
 
 # Export utilities
 reportlab>=4.0.0
 openpyxl>=3.1.0
-

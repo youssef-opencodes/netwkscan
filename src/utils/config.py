@@ -67,7 +67,10 @@ def detect_router_ip() -> str:
     # Method 1: Windows ipconfig / route print parsing
     if system_name == "Windows":
         try:
-            output = subprocess.check_output("ipconfig", text=True, errors="ignore")
+            extra_flags = {}
+            if hasattr(subprocess, "CREATE_NO_WINDOW"):
+                extra_flags["creationflags"] = subprocess.CREATE_NO_WINDOW
+            output = subprocess.check_output("ipconfig", text=True, errors="ignore", **extra_flags)
             gateways = re.findall(r"Default Gateway[.\s]*:\s*(\d+\.\d+\.\d+\.\d+)", output)
             for gw in gateways:
                 if gw and gw != "0.0.0.0":

@@ -1,84 +1,169 @@
 # NMD — Network Monitoring Dashboard
 
-A desktop network monitoring and authorized vulnerability assessment application built with Python, CustomTkinter, Nmap, SQLite/SQLAlchemy, and ReportLab.
+**NMD** est une application desktop professionnelle de surveillance réseau et d'évaluation autorisée des vulnérabilités pour Windows, développée en **Python 3**, **PySide6 (Qt 6)**, **Nmap**, **SQLite / SQLAlchemy**, **ReportLab** et compilable sous forme de fichier exécutable autonome (`.exe`) via **PyInstaller**.
 
 ---
 
-## 🛡️ Vulnerability Scan Feature
+## 🛡️ Fonctionnalités Principales
 
-NMD includes a dedicated **Vulnerability Scan** mode that performs authorized security assessments against hosts or subnets using Nmap NSE vulnerability scripts (`--script vuln`).
-
-### Key Capabilities
-
-- **Safe Detection**: Executes non-exploitative Nmap NSE vulnerability detection (`-sV --script vuln`).
-- **Structured XML Parsing**: Parses structured Nmap XML output to extract hosts, open ports, services, CVE identifiers, titles, and evidence.
-- **Normalized Severities**: Normalizes findings into `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`, or `UNKNOWN` based strictly on CVSS scores or explicit script output (never guessing or inventing scores/CVEs).
-- **SQLite Database Persistence**: Stores vulnerability findings in the `vulnerabilities` table without breaking existing device or scan history data.
-- **Multi-Format Reporting**: Generates clean ASCII TXT reports and professional ReportLab PDF assessment reports.
-- **Scheduler & Alert Engine Integration**: Supports automated background vulnerability scans and triggers `NEW_VULNERABILITY_DETECTED` alerts.
+- **Interface Graphique Moderne (PySide6)** : Theme sombre type cybersécurité, navigation latérale responsive (Dashboard, Scan, Results, Reports, Settings, About).
+- **Moteur de Scan Non-Bloquant (Multithread)** : Execution asynchrone via `QThread` pour des scans réactifs sans figer l'interface.
+- **Découverte Réseau & Fingerprinting** : Scan rapide (`-sn`), scan complet (`-sV -O`), pré-réglages personnalisés et classification des équipements (Router, PC, Phone, Server).
+- **Évaluation des Vulnérabilités** : Exécution sécurisée des scripts Nmap NSE (`--script vuln`), extraction automatique des identifiants CVE, scores CVSS et preuves d'exécution.
+- **Normalisation des Sévérités** : Classification stricte selon CVSS (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`, `UNKNOWN`).
+- **Base de Données SQLite / SQLAlchemy** : Stockage persistant des hôtes, de l'historique des scans et des vulnérabilités sans pertes de données.
+- **Rapports Multi-Formats** :
+  - Executive Assessment PDF (ReportLab)
+  - Technical ASCII TXT Assessment
+  - Inventory Devices PDF & CSV
+  - Raw JSON Findings Data Export
+- **Double Mode GUI / CLI** : Lancement automatique en interface graphique PySide6 par défaut tout en conservant la compatibilité avec les commandes CLI (`python main.py --cli`).
+- **Exécutable Windows Autonome (`.exe`)** : Compilable avec PyInstaller et distribuable sur un système Windows sans Python installé.
 
 ---
 
-## 📋 Requirements & Installation
+## 📋 Prérequis
 
-1. **Python 3.10+** (Python 3.13 / 3.14 compatible)
-2. **Nmap Binary**: Ensure Nmap is installed on the host operating system:
-   - **Windows**: Download from [nmap.org](https://nmap.org/download.html) or install via `winget install Nmap.Nmap`.
-   - **Linux**: `sudo apt-get install nmap`
+1. **Windows 10 / 11** (ou Linux/macOS pour le développement backend).
+2. **Python 3.10+** (Compatibilité testée Python 3.12 / 3.13).
+3. **Exécutable Nmap** :
+   - **Windows** : Télécharger sur [nmap.org](https://nmap.org/download.html) ou via `winget install Nmap.Nmap`.
+   - **Linux** : `sudo apt-get install nmap`
 
-### Setup Virtual Environment
+---
+
+## 💻 Installation (Développement)
 
 ```bash
-# 1. Create virtual environment
+# 1. Créer l'environnement virtuel Python
 python -m venv .venv
 
-# 2. Activate virtual environment
-# Windows PowerShell:
+# 2. Activer l'environnement virtuel
+# PowerShell Windows :
 .\.venv\Scripts\Activate.ps1
-# Linux/macOS:
+# Bash Linux/macOS :
 source .venv/bin/activate
 
-# 3. Install dependencies
+# 3. Installer les dépendances
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🚀 Running NMD & Launching Scans
+## 🚀 Utilisation
 
-### Launch Application GUI
+### Mode Interface Graphique (PySide6 Desktop App)
+
+Pour lancer l'application graphique PySide6 :
 
 ```bash
 python main.py
+# ou directement
+python desktop_app.py
 ```
 
-### Running Vulnerability Scans via GUI
+### Mode Ligne de Commande (CLI)
 
-1. Open NMD GUI and navigate to **Vulnerability scan** in the sidebar.
-2. Enter the target IP or subnet CIDR (e.g. `192.168.1.10` or `192.168.1.0/24`).
-3. Click **Start Vulnerability Scan**.
-4. View real-time results, severity breakdown, and findings table.
-5. Click **Export TXT Report** or **Export PDF Report** to generate assessment reports.
+Pour utiliser le CLI sans interface graphique :
 
----
+```bash
+# Scan rapide d'un sous-réseau
+python main.py --cli --target 192.168.1.0/24 --scan-type quick
 
-## 📊 Severity Classification Matrix
-
-| Severity Level | CVSS Score Range | Description |
-|---|---|---|
-| **CRITICAL** | `9.0 - 10.0` | Severe vulnerabilities allowing unauthenticated RCE or total host compromise. |
-| **HIGH** | `7.0 - 8.9` | High impact vulnerabilities affecting confidentiality, integrity, or availability. |
-| **MEDIUM** | `4.0 - 6.9` | Moderate security issues requiring specific conditions or configuration flaws. |
-| **LOW** | `0.1 - 3.9` | Minor security risks or informational exposure. |
-| **INFO** | `0.0` | Informational security checks or service disclosures. |
-| **UNKNOWN** | `None` | Findings where CVSS or explicit risk rating is omitted by Nmap. |
+# Assessment de vulnérabilités avec export de rapport
+python main.py --cli --target 192.168.1.10 --scan-type vulnerability --export
+```
 
 ---
 
-## ⚠️ Safety, Limitations, & Disclaimer
+## 📦 Compilation de l'Exécutable Windows (.exe)
+
+L'exécutable Windows est généré avec PyInstaller en mode `--windowed` (sans fenêtre de console noire).
+
+### Méthode 1 : Script Batch Automatisé
+
+```cmd
+build_windows.bat
+```
+
+### Méthode 2 : Commande PyInstaller Directe
+
+```cmd
+pyinstaller --clean build_windows.spec
+```
+
+Le résultat de la compilation se trouve dans :
+```text
+dist/NMD/NMD-Security-Dashboard.exe
+```
+
+---
+
+## 🛠️ Création de l'Installateur Windows (Inno Setup)
+
+Si Inno Setup Compiler est installé sur votre système Windows :
+
+```cmd
+iscc installer_setup.iss
+```
+
+L'installateur sera généré sous :
+```text
+dist/NMD-Setup-v1.0.0.exe
+```
+
+---
+
+## 🧪 Execution des Tests Unitaires
+
+```bash
+python -m pytest
+```
+
+---
+
+## 🏗️ Architecture du Projet
+
+```text
+netwkscan/
+├── src/
+│   ├── core/                  # Moteur Nmap, vulnérabilités, SQLite DB, scheduler, alerte
+│   │   ├── scanner.py
+│   │   ├── vulnerability_scanner.py
+│   │   ├── database.py
+│   │   ├── analyzer.py
+│   │   ├── alert_engine.py
+│   │   └── scheduler.py
+│   ├── gui/                   # Interface graphique PySide6 (Qt)
+│   │   ├── pages/
+│   │   │   ├── pyside_dashboard.py
+│   │   │   ├── pyside_scan.py
+│   │   │   ├── pyside_results.py
+│   │   │   ├── pyside_reports.py
+│   │   │   ├── pyside_settings.py
+│   │   │   └── pyside_about.py
+│   │   ├── theme.py
+│   │   ├── workers.py
+│   │   └── pyside_main_window.py
+│   ├── models/                # Modèles SQLAlchemy (Device, Scan, Vulnerability)
+│   ├── presets/               # Configuration des préréglages Nmap
+│   ├── reports/               # Générateurs de rapports ReportLab (PDF & TXT)
+│   └── utils/                 # Exporter CSV/PDF, logger audit, path resolver
+├── data/                      # Base SQLite nmd.db, config.json, logs, exports
+├── resources/                 # Icônes Windows (icon.ico, icon.png)
+├── tests/                     # Suite de tests unitaires pytest
+├── main.py                    # Point d'entrée principal (GUI / CLI)
+├── desktop_app.py             # Lanceur PySide6 dédié
+├── build_windows.spec         # Configuration PyInstaller
+├── build_windows.bat          # Script de build automatisé Windows
+├── installer_setup.iss        # Script d'installateur Inno Setup
+└── .github/workflows/
+    └── build-windows.yml      # GitHub Actions CI/CD Windows Latest
+```
+
+---
+
+## ⚠️ Disclaimer & Sécurité
 
 > [!IMPORTANT]
-> **Authorization Disclaimer**: Only scan systems and networks that you own or are explicitly authorized to assess. Unauthorized scanning may violate computer misuse laws.
-
-- **Non-Exploitative**: This scanner performs **detection and reporting only**. It does NOT execute exploits, deliver payloads, perform brute force, or establish persistence.
-- **Nmap NSE Scope**: Nmap vulnerability scripts provide targeted service checks. Absence of findings does NOT guarantee that a system is 100% secure.
+> **Autorisation Obligatoire** : N'effectuez des scans que sur des systèmes et réseaux dont vous êtes le propriétaire ou pour lesquels vous disposez d'une autorisation écrite formelle.

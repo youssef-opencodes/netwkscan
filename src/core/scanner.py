@@ -494,14 +494,20 @@ class Scanner:
         returncode = -1
 
         try:
-            # Execute subprocess safely
+            popen_kwargs: dict[str, Any] = {
+                "stdout": subprocess.PIPE,
+                "stderr": subprocess.PIPE,
+                "text": True,
+                "encoding": "utf-8",
+                "errors": "replace",
+            }
+            if platform.system() == "Windows":
+                popen_kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+
+            # Execute subprocess safely without popping up console windows on Windows
             self._active_process = subprocess.Popen(
                 cmd_args,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
+                **popen_kwargs,
             )
 
             stdout_data, stderr_data = self._active_process.communicate(timeout=timeout)
